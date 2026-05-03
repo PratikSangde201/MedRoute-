@@ -1,0 +1,602 @@
+[
+  {
+    "id": "MR_001",
+    "question": "What are the symptoms of Malaria?",
+    "expected_answer": "symptoms malaria fever chills",
+    "route": "FACTUAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What are the symptoms of Malaria?",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["fever", "chills", "antimalarial", "chloroquine", "mosquito"]
+  },
+  {
+    "id": "MR_002",
+    "question": "What is the treatment for Dengue?",
+    "expected_answer": "dengue treatment platelet rehydration",
+    "route": "FACTUAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What is the treatment for Dengue?",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["platelet", "mosquito", "aedes", "rash", "hemorrhagic"]
+  },
+  {
+    "id": "MR_003",
+    "question": "How is Diabetes diagnosed?",
+    "expected_answer": "diabetes diagnosis glucose insulin",
+    "route": "FACTUAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "How is Diabetes diagnosed?",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["insulin", "glucose", "blood sugar", "kidney", "nephropathy", "pancreas"]
+  },
+  {
+    "id": "MR_004",
+    "question": "What causes Hypertension?",
+    "expected_answer": "hypertension causes blood pressure sodium",
+    "route": "RELATIONAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What causes Hypertension?",
+    "expected_route": "RELATIONAL",
+    "evidence_keywords": ["blood pressure", "ACE inhibitor", "diuretic", "sodium", "mmHg"]
+  },
+  {
+    "id": "MR_005",
+    "question": "Which medication treats Bronchial Asthma?",
+    "expected_answer": "bronchial asthma inhaler bronchodilator",
+    "route": "FACTUAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "Which medication treats Bronchial Asthma?",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["inhaler", "bronchodilator", "wheeze", "airway", "corticosteroid"]
+  },
+  {
+    "id": "MR_006",
+    "question": "What are precautions for Tuberculosis?",
+    "expected_answer": "tuberculosis precautions isoniazid rifampicin",
+    "route": "FACTUAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What are precautions for Tuberculosis?",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["isoniazid", "rifampicin", "cough", "sputum", "TB", "lungs"]
+  },
+  {
+    "id": "MR_007",
+    "question": "What are the symptoms of Pneumonia?",
+    "expected_answer": "pneumonia symptoms fever cough antibiotic",
+    "route": "FACTUAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What are the symptoms of Pneumonia?",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["antibiotic", "amoxicillin", "lung", "consolidation", "fever"]
+  },
+  {
+    "id": "MR_008",
+    "question": "What is the treatment for Typhoid?",
+    "expected_answer": "typhoid treatment antibiotic fever",
+    "route": "FACTUAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What is the treatment for Typhoid?",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["antibiotic", "fever", "treatment", "typhoid", "ciprofloxacin"]
+  },
+  {
+    "id": "MR_009",
+    "question": "How is Jaundice diagnosed?",
+    "expected_answer": "jaundice diagnosis bilirubin liver",
+    "route": "FACTUAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "How is Jaundice diagnosed?",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["bilirubin", "liver", "jaundice", "yellow", "diagnosis"]
+  },
+  {
+    "id": "MR_010",
+    "question": "What causes Migraine?",
+    "expected_answer": "migraine causes triggers headache",
+    "route": "RELATIONAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What causes Migraine?",
+    "expected_route": "RELATIONAL",
+    "evidence_keywords": ["headache", "migraine", "triggers", "nausea", "light sensitivity"]
+  },
+  {
+    "id": "MR_011",
+    "question": "Which medication treats Hypothyroidism?",
+    "expected_answer": "hypothyroidism medication levothyroxine thyroid",
+    "route": "FACTUAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "Which medication treats Hypothyroidism?",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["levothyroxine", "thyroid", "hormone", "medication", "hypothyroidism"]
+  },
+  {
+    "id": "MR_012",
+    "question": "What are precautions for Common Cold?",
+    "expected_answer": "common cold precautions hygiene rest",
+    "route": "FACTUAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What are precautions for Common Cold?",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["hygiene", "rest", "virus", "cold", "precaution"]
+  },
+  {
+    "id": "MR_013",
+    "question": "What are the symptoms of Chicken pox?",
+    "expected_answer": "chicken pox symptoms rash fever itching",
+    "route": "FACTUAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What are the symptoms of Chicken pox?",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["rash", "fever", "itching", "blister", "varicella"]
+  },
+  {
+    "id": "MR_014",
+    "question": "What is the treatment for GERD?",
+    "expected_answer": "gerd treatment antacid proton pump inhibitor",
+    "route": "FACTUAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What is the treatment for GERD?",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["antacid", "proton pump", "reflux", "esophagus", "treatment"]
+  },
+  {
+    "id": "MR_015",
+    "question": "How is Hepatitis B diagnosed?",
+    "expected_answer": "hepatitis b diagnosis blood test antigen",
+    "route": "FACTUAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "How is Hepatitis B diagnosed?",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["hepatitis", "antigen", "blood test", "liver", "diagnosis"]
+  },
+  {
+    "id": "MR_016",
+    "question": "How does Diabetes lead to Hypertension?",
+    "expected_answer": "diabetes lead hypertension insulin resistance kidney",
+    "route": "RELATIONAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "How does Diabetes lead to Hypertension?",
+    "expected_route": "RELATIONAL",
+    "evidence_keywords": ["insulin", "glucose", "blood sugar", "kidney", "nephropathy", "pancreas"]
+  },
+  {
+    "id": "MR_017",
+    "question": "What is the relationship between Malaria and Jaundice?",
+    "expected_answer": "relationship malaria jaundice red blood cell hemolysis",
+    "route": "RELATIONAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What is the relationship between Malaria and Jaundice?",
+    "expected_route": "RELATIONAL",
+    "evidence_keywords": ["fever", "chills", "antimalarial", "chloroquine", "mosquito"]
+  },
+  {
+    "id": "MR_018",
+    "question": "How does Dengue affect patients with Hypertension?",
+    "expected_answer": "dengue affect hypertension blood pressure platelet",
+    "route": "RELATIONAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "How does Dengue affect patients with Hypertension?",
+    "expected_route": "RELATIONAL",
+    "evidence_keywords": ["blood pressure", "ACE inhibitor", "diuretic", "sodium", "mmHg"]
+  },
+  {
+    "id": "MR_019",
+    "question": "What complications arise from Pneumonia in patients with Diabetes?",
+    "expected_answer": "pneumonia complications diabetes immune glucose",
+    "route": "RELATIONAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What complications arise from Pneumonia in patients with Diabetes?",
+    "expected_route": "RELATIONAL",
+    "evidence_keywords": ["insulin", "glucose", "blood sugar", "kidney", "nephropathy", "pancreas"]
+  },
+  {
+    "id": "MR_020",
+    "question": "How does Tuberculosis lead to weight loss and fatigue?",
+    "expected_answer": "tuberculosis weight loss fatigue metabolism",
+    "route": "RELATIONAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "How does Tuberculosis lead to weight loss and fatigue?",
+    "expected_route": "RELATIONAL",
+    "evidence_keywords": ["isoniazid", "rifampicin", "cough", "sputum", "TB", "lungs"]
+  },
+  {
+    "id": "MR_021",
+    "question": "What is the relationship between GERD and Chronic cholestasis?",
+    "expected_answer": "relationship gerd chronic cholestasis bile acid reflux",
+    "route": "RELATIONAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What is the relationship between GERD and Chronic cholestasis?",
+    "expected_route": "RELATIONAL",
+    "evidence_keywords": ["bile", "acid", "reflux", "cholestasis", "relationship"]
+  },
+  {
+    "id": "MR_022",
+    "question": "How does Hepatitis C affect patients with Diabetes?",
+    "expected_answer": "hepatitis c affect diabetes insulin resistance liver",
+    "route": "RELATIONAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "How does Hepatitis C affect patients with Diabetes?",
+    "expected_route": "RELATIONAL",
+    "evidence_keywords": ["insulin", "glucose", "blood sugar", "kidney", "nephropathy", "pancreas"]
+  },
+  {
+    "id": "MR_023",
+    "question": "What complications arise from Hypertension in patients with Heart attack?",
+    "expected_answer": "hypertension complications heart attack cardiac",
+    "route": "RELATIONAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What complications arise from Hypertension in patients with Heart attack?",
+    "expected_route": "RELATIONAL",
+    "evidence_keywords": ["blood pressure", "ACE inhibitor", "diuretic", "sodium", "mmHg"]
+  },
+  {
+    "id": "MR_024",
+    "question": "How does Hypothyroidism affect patients with Depression?",
+    "expected_answer": "hypothyroidism affect depression thyroid hormone mood",
+    "route": "RELATIONAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "How does Hypothyroidism affect patients with Depression?",
+    "expected_route": "RELATIONAL",
+    "evidence_keywords": ["thyroid", "hormone", "depression", "mood", "hypothyroidism"]
+  },
+  {
+    "id": "MR_025",
+    "question": "What is the relationship between Common Cold and Bronchial Asthma?",
+    "expected_answer": "relationship common cold bronchial asthma trigger airway",
+    "route": "RELATIONAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What is the relationship between Common Cold and Bronchial Asthma?",
+    "expected_route": "RELATIONAL",
+    "evidence_keywords": ["inhaler", "bronchodilator", "wheeze", "airway", "corticosteroid"]
+  },
+  {
+    "id": "MR_026",
+    "question": "How does AIDS affect patients with Tuberculosis?",
+    "expected_answer": "aids affect tuberculosis immune CD4 opportunistic",
+    "route": "RELATIONAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "How does AIDS affect patients with Tuberculosis?",
+    "expected_route": "RELATIONAL",
+    "evidence_keywords": ["isoniazid", "rifampicin", "cough", "sputum", "TB", "lungs"]
+  },
+  {
+    "id": "MR_027",
+    "question": "What complications arise from Diabetes in patients with Urinary tract infection?",
+    "expected_answer": "diabetes complications urinary tract infection glucose immune",
+    "route": "RELATIONAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What complications arise from Diabetes in patients with Urinary tract infection?",
+    "expected_route": "RELATIONAL",
+    "evidence_keywords": ["insulin", "glucose", "blood sugar", "kidney", "nephropathy", "pancreas"]
+  },
+  {
+    "id": "MR_028",
+    "question": "How does Hyperthyroidism affect patients with Hypertension?",
+    "expected_answer": "hyperthyroidism affect hypertension thyroid blood pressure",
+    "route": "RELATIONAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "How does Hyperthyroidism affect patients with Hypertension?",
+    "expected_route": "RELATIONAL",
+    "evidence_keywords": ["blood pressure", "ACE inhibitor", "diuretic", "sodium", "mmHg"]
+  },
+  {
+    "id": "MR_029",
+    "question": "What is the relationship between Alcoholic hepatitis and Jaundice?",
+    "expected_answer": "relationship alcoholic hepatitis jaundice liver bilirubin",
+    "route": "RELATIONAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What is the relationship between Alcoholic hepatitis and Jaundice?",
+    "expected_route": "RELATIONAL",
+    "evidence_keywords": ["liver", "bilirubin", "alcohol", "hepatitis", "jaundice"]
+  },
+  {
+    "id": "MR_030",
+    "question": "How does Pneumonia lead to sepsis and respiratory failure?",
+    "expected_answer": "pneumonia lead sepsis respiratory failure infection",
+    "route": "RELATIONAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "How does Pneumonia lead to sepsis and respiratory failure?",
+    "expected_route": "RELATIONAL",
+    "evidence_keywords": ["antibiotic", "amoxicillin", "lung", "consolidation", "fever"]
+  },
+  {
+    "id": "MR_031",
+    "question": "Compare symptoms of Malaria and Dengue.",
+    "expected_answer": "symptoms malaria dengue fever chills rash",
+    "route": "COMPLEX",
+    "source": "medroute_handcrafted_v1",
+    "query": "Compare symptoms of Malaria and Dengue.",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["fever", "chills", "antimalarial", "chloroquine", "mosquito"]
+  },
+  {
+    "id": "MR_032",
+    "question": "What are the risk factors and complications of Diabetes?",
+    "expected_answer": "diabetes risk factors complications insulin glucose kidney",
+    "route": "COMPLEX",
+    "source": "medroute_handcrafted_v1",
+    "query": "What are the risk factors and complications of Diabetes?",
+    "expected_route": "COMPLEX",
+    "evidence_keywords": ["insulin", "glucose", "blood sugar", "kidney", "nephropathy", "pancreas"]
+  },
+  {
+    "id": "MR_033",
+    "question": "How do Tuberculosis and Pneumonia differ in treatment approach?",
+    "expected_answer": "tuberculosis pneumonia differ treatment antibiotic isoniazid",
+    "route": "COMPLEX",
+    "source": "medroute_handcrafted_v1",
+    "query": "How do Tuberculosis and Pneumonia differ in treatment approach?",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["isoniazid", "rifampicin", "cough", "sputum", "TB", "lungs"]
+  },
+  {
+    "id": "MR_034",
+    "question": "What is the mechanism by which Hypertension causes Heart attack and Stroke?",
+    "expected_answer": "mechanism hypertension heart attack stroke blood pressure",
+    "route": "COMPLEX",
+    "source": "medroute_handcrafted_v1",
+    "query": "What is the mechanism by which Hypertension causes Heart attack and Stroke?",
+    "expected_route": "RELATIONAL",
+    "evidence_keywords": ["blood pressure", "ACE inhibitor", "diuretic", "sodium", "mmHg"]
+  },
+  {
+    "id": "MR_035",
+    "question": "Compare symptoms of Hypothyroidism and Hyperthyroidism.",
+    "expected_answer": "symptoms hypothyroidism hyperthyroidism thyroid hormone",
+    "route": "COMPLEX",
+    "source": "medroute_handcrafted_v1",
+    "query": "Compare symptoms of Hypothyroidism and Hyperthyroidism.",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["thyroid", "hormone", "symptoms", "hypothyroidism", "hyperthyroidism"]
+  },
+  {
+    "id": "MR_036",
+    "question": "What are the risk factors and complications of Hepatitis B?",
+    "expected_answer": "hepatitis b risk factors complications liver cirrhosis",
+    "route": "COMPLEX",
+    "source": "medroute_handcrafted_v1",
+    "query": "What are the risk factors and complications of Hepatitis B?",
+    "expected_route": "COMPLEX",
+    "evidence_keywords": ["liver", "cirrhosis", "hepatitis", "antigen", "risk"]
+  },
+  {
+    "id": "MR_037",
+    "question": "How do GERD and Peptic ulcer disease differ in treatment approach?",
+    "expected_answer": "gerd peptic ulcer differ treatment antacid proton pump",
+    "route": "COMPLEX",
+    "source": "medroute_handcrafted_v1",
+    "query": "How do GERD and Peptic ulcer disease differ in treatment approach?",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["antacid", "proton pump", "ulcer", "reflux", "treatment"]
+  },
+  {
+    "id": "MR_038",
+    "question": "What is the mechanism by which Dengue causes bleeding and shock?",
+    "expected_answer": "mechanism dengue bleeding shock platelet vascular",
+    "route": "COMPLEX",
+    "source": "medroute_handcrafted_v1",
+    "query": "What is the mechanism by which Dengue causes bleeding and shock?",
+    "expected_route": "RELATIONAL",
+    "evidence_keywords": ["platelet", "mosquito", "aedes", "rash", "hemorrhagic"]
+  },
+  {
+    "id": "MR_039",
+    "question": "Compare symptoms of Common Cold and Influenza.",
+    "expected_answer": "symptoms common cold influenza fever cough",
+    "route": "COMPLEX",
+    "source": "medroute_handcrafted_v1",
+    "query": "Compare symptoms of Common Cold and Influenza.",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["fever", "cough", "virus", "influenza", "cold"]
+  },
+  {
+    "id": "MR_040",
+    "question": "What are the risk factors and complications of Bronchial Asthma?",
+    "expected_answer": "bronchial asthma risk factors complications inhaler airway",
+    "route": "COMPLEX",
+    "source": "medroute_handcrafted_v1",
+    "query": "What are the risk factors and complications of Bronchial Asthma?",
+    "expected_route": "COMPLEX",
+    "evidence_keywords": ["inhaler", "bronchodilator", "wheeze", "airway", "corticosteroid"]
+  },
+  {
+    "id": "MR_041",
+    "question": "How do Typhoid and Gastroenteritis differ in treatment approach?",
+    "expected_answer": "typhoid gastroenteritis differ treatment antibiotic rehydration",
+    "route": "COMPLEX",
+    "source": "medroute_handcrafted_v1",
+    "query": "How do Typhoid and Gastroenteritis differ in treatment approach?",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["antibiotic", "rehydration", "fever", "treatment", "typhoid"]
+  },
+  {
+    "id": "MR_042",
+    "question": "What is the mechanism by which Chronic cholestasis causes Jaundice and itching?",
+    "expected_answer": "mechanism chronic cholestasis jaundice itching bile bilirubin",
+    "route": "COMPLEX",
+    "source": "medroute_handcrafted_v1",
+    "query": "What is the mechanism by which Chronic cholestasis causes Jaundice and itching?",
+    "expected_route": "RELATIONAL",
+    "evidence_keywords": ["bile", "bilirubin", "cholestasis", "jaundice", "itching"]
+  },
+  {
+    "id": "MR_043",
+    "question": "Compare symptoms of Arthritis and Osteoarthritis.",
+    "expected_answer": "symptoms arthritis osteoarthritis joint pain inflammation",
+    "route": "COMPLEX",
+    "source": "medroute_handcrafted_v1",
+    "query": "Compare symptoms of Arthritis and Osteoarthritis.",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["joint", "pain", "inflammation", "arthritis", "cartilage"]
+  },
+  {
+    "id": "MR_044",
+    "question": "What are the risk factors and complications of Tuberculosis?",
+    "expected_answer": "tuberculosis risk factors complications isoniazid lungs",
+    "route": "COMPLEX",
+    "source": "medroute_handcrafted_v1",
+    "query": "What are the risk factors and complications of Tuberculosis?",
+    "expected_route": "COMPLEX",
+    "evidence_keywords": ["isoniazid", "rifampicin", "cough", "sputum", "TB", "lungs"]
+  },
+  {
+    "id": "MR_045",
+    "question": "How do Hepatitis A and Hepatitis E differ in treatment approach?",
+    "expected_answer": "hepatitis a hepatitis e differ treatment supportive liver",
+    "route": "COMPLEX",
+    "source": "medroute_handcrafted_v1",
+    "query": "How do Hepatitis A and Hepatitis E differ in treatment approach?",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["hepatitis", "liver", "treatment", "supportive", "antiviral"]
+  },
+  {
+    "id": "MR_046",
+    "question": "How can Malaria be prevented?",
+    "expected_answer": "malaria prevention mosquito net antimalarial prophylaxis",
+    "route": "GENERAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "How can Malaria be prevented?",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["fever", "chills", "antimalarial", "chloroquine", "mosquito"]
+  },
+  {
+    "id": "MR_047",
+    "question": "What lifestyle changes help manage Diabetes?",
+    "expected_answer": "diabetes lifestyle diet exercise glucose management",
+    "route": "GENERAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What lifestyle changes help manage Diabetes?",
+    "expected_route": "GENERAL",
+    "evidence_keywords": ["insulin", "glucose", "blood sugar", "kidney", "nephropathy", "pancreas"]
+  },
+  {
+    "id": "MR_048",
+    "question": "When should a patient with Dengue seek emergency care?",
+    "expected_answer": "dengue emergency care platelet bleeding warning signs",
+    "route": "GENERAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "When should a patient with Dengue seek emergency care?",
+    "expected_route": "GENERAL",
+    "evidence_keywords": ["platelet", "mosquito", "aedes", "rash", "hemorrhagic"]
+  },
+  {
+    "id": "MR_049",
+    "question": "What dietary recommendations exist for Hypertension patients?",
+    "expected_answer": "hypertension dietary recommendations sodium potassium DASH diet",
+    "route": "GENERAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What dietary recommendations exist for Hypertension patients?",
+    "expected_route": "GENERAL",
+    "evidence_keywords": ["blood pressure", "ACE inhibitor", "diuretic", "sodium", "mmHg"]
+  },
+  {
+    "id": "MR_050",
+    "question": "How can Tuberculosis be prevented?",
+    "expected_answer": "tuberculosis prevention BCG vaccine isoniazid prophylaxis",
+    "route": "GENERAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "How can Tuberculosis be prevented?",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["isoniazid", "rifampicin", "cough", "sputum", "TB", "lungs"]
+  },
+  {
+    "id": "MR_051",
+    "question": "What lifestyle changes help manage GERD?",
+    "expected_answer": "gerd lifestyle changes diet elevate head avoid triggers",
+    "route": "GENERAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What lifestyle changes help manage GERD?",
+    "expected_route": "GENERAL",
+    "evidence_keywords": ["reflux", "diet", "lifestyle", "trigger", "esophagus"]
+  },
+  {
+    "id": "MR_052",
+    "question": "When should a patient with Pneumonia seek emergency care?",
+    "expected_answer": "pneumonia emergency care breathing difficulty oxygen saturation",
+    "route": "GENERAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "When should a patient with Pneumonia seek emergency care?",
+    "expected_route": "GENERAL",
+    "evidence_keywords": ["antibiotic", "amoxicillin", "lung", "consolidation", "fever"]
+  },
+  {
+    "id": "MR_053",
+    "question": "What dietary recommendations exist for Jaundice patients?",
+    "expected_answer": "jaundice dietary recommendations liver diet low fat",
+    "route": "GENERAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What dietary recommendations exist for Jaundice patients?",
+    "expected_route": "GENERAL",
+    "evidence_keywords": ["liver", "bilirubin", "diet", "jaundice", "fat"]
+  },
+  {
+    "id": "MR_054",
+    "question": "How can Common Cold be prevented?",
+    "expected_answer": "common cold prevention hygiene handwashing virus",
+    "route": "GENERAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "How can Common Cold be prevented?",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["hygiene", "handwashing", "virus", "cold", "prevention"]
+  },
+  {
+    "id": "MR_055",
+    "question": "What lifestyle changes help manage Hypothyroidism?",
+    "expected_answer": "hypothyroidism lifestyle changes diet exercise thyroid",
+    "route": "GENERAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What lifestyle changes help manage Hypothyroidism?",
+    "expected_route": "GENERAL",
+    "evidence_keywords": ["thyroid", "hormone", "diet", "lifestyle", "hypothyroidism"]
+  },
+  {
+    "id": "MR_056",
+    "question": "When should a patient with Heart attack seek emergency care?",
+    "expected_answer": "heart attack emergency care chest pain immediate ambulance",
+    "route": "GENERAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "When should a patient with Heart attack seek emergency care?",
+    "expected_route": "GENERAL",
+    "evidence_keywords": ["chest pain", "emergency", "heart attack", "immediate", "ambulance"]
+  },
+  {
+    "id": "MR_057",
+    "question": "What dietary recommendations exist for Diabetes patients?",
+    "expected_answer": "diabetes dietary recommendations glucose low sugar diet carbohydrate",
+    "route": "GENERAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What dietary recommendations exist for Diabetes patients?",
+    "expected_route": "GENERAL",
+    "evidence_keywords": ["insulin", "glucose", "blood sugar", "kidney", "nephropathy", "pancreas"]
+  },
+  {
+    "id": "MR_058",
+    "question": "How can Hepatitis B be prevented?",
+    "expected_answer": "hepatitis b prevention vaccine vaccination blood",
+    "route": "GENERAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "How can Hepatitis B be prevented?",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["vaccine", "vaccination", "hepatitis", "blood", "prevention"]
+  },
+  {
+    "id": "MR_059",
+    "question": "What lifestyle changes help manage Bronchial Asthma?",
+    "expected_answer": "bronchial asthma lifestyle changes avoid triggers inhaler",
+    "route": "GENERAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "What lifestyle changes help manage Bronchial Asthma?",
+    "expected_route": "GENERAL",
+    "evidence_keywords": ["inhaler", "bronchodilator", "wheeze", "airway", "corticosteroid"]
+  },
+  {
+    "id": "MR_060",
+    "question": "When should a patient with Typhoid seek emergency care?",
+    "expected_answer": "typhoid emergency care high fever complications hospital",
+    "route": "GENERAL",
+    "source": "medroute_handcrafted_v1",
+    "query": "When should a patient with Typhoid seek emergency care?",
+    "expected_route": "GENERAL",
+    "evidence_keywords": ["fever", "emergency", "typhoid", "hospital", "complications"]
+  }
+]

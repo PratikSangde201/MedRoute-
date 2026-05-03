@@ -1,0 +1,178 @@
+{
+  "malaria": {
+    "canonical_name": "Malaria",
+    "aliases": ["plasmodium infection"],
+    "symptoms": ["fever", "chills", "headache", "sweating", "fatigue"],
+    "causes": ["Plasmodium parasite transmitted through bites of infected Anopheles mosquitoes"],
+    "treatments": ["antimalarial medicines", "hydration", "fever management"],
+    "precautions": ["use insecticide-treated bed nets", "remove stagnant water", "use mosquito repellents"],
+    "red_flags": ["confusion", "difficulty breathing", "persistent vomiting", "seizures", "reduced urine output"],
+    "source_name": "WHO",
+    "source_url": "https://www.who.int/news-room/fact-sheets/detail/malaria"
+  },
+  "dengue": {
+    "canonical_name": "Dengue",
+    "aliases": ["breakbone fever"],
+    "symptoms": ["high fever", "headache", "pain behind the eyes", "muscle pain", "joint pain", "rash"],
+    "causes": ["Dengue virus transmitted by Aedes mosquitoes"],
+    "treatments": ["fluid replacement", "pain and fever control with medical guidance", "close monitoring"],
+    "precautions": ["avoid mosquito bites", "remove standing water", "use window screens and repellents"],
+    "red_flags": ["severe abdominal pain", "persistent vomiting", "bleeding", "drowsiness", "breathing difficulty"],
+    "source_name": "WHO",
+    "source_url": "https://www.who.int/news-room/fact-sheets/detail/dengue-and-severe-dengue"
+  },
+  "diabetes": {
+    "canonical_name": "Diabetes",
+    "aliases": ["diabetes mellitus", "sugar disease", "high blood sugar"],
+    "symptoms": ["increased thirst", "frequent urination", "fatigue", "blurred vision", "unintended weight loss"],
+    "causes": ["insulin deficiency", "insulin resistance", "genetic and lifestyle factors"],
+    "treatments": ["blood glucose monitoring", "diet and exercise", "oral medicines or insulin"],
+    "precautions": ["regular follow-up", "healthy diet", "physical activity", "medication adherence"],
+    "red_flags": ["confusion", "deep rapid breathing", "persistent vomiting", "severe dehydration"],
+    "source_name": "WHO",
+    "source_url": "https://www.who.int/news-room/fact-sheets/detail/diabetes"
+  },
+  "hypertension": {
+    "canonical_name": "Hypertension",
+    "aliases": ["high bp", "high blood pressure"],
+    "symptoms": ["often no symptoms", "headache", "chest discomfort", "shortness of breath in severe cases"],
+    "causes": ["genetic factors", "high salt intake", "obesity", "physical inactivity"],
+    "treatments": ["lifestyle modification", "antihypertensive medications", "regular blood pressure monitoring"],
+    "precautions": ["get proper sleep", "reduce salt intake", "maintain healthy weight", "exercise regularly", "avoid smoking"],
+    "red_flags": ["severe chest pain", "sudden weakness", "speech difficulty", "vision loss"],
+    "source_name": "WHO",
+    "source_url": "https://www.who.int/news-room/fact-sheets/detail/hypertension"
+  },
+  "asthma": {
+    "canonical_name": "Asthma",
+    "aliases": ["bronchial asthma"],
+    "symptoms": ["wheezing", "cough", "shortness of breath", "chest tightness"],
+    "causes": ["airway inflammation", "allergen exposure", "respiratory irritants", "genetic susceptibility"],
+    "treatments": ["inhaled bronchodilators", "inhaled corticosteroids", "trigger avoidance"],
+    "precautions": ["avoid known triggers", "use controller medication as prescribed", "monitor symptoms"],
+    "red_flags": ["difficulty speaking", "blue lips", "no relief after rescue inhaler", "severe breathlessness"],
+    "source_name": "WHO",
+    "source_url": "https://www.who.int/news-room/fact-sheets/detail/asthma"
+  },
+  "bronchitis": {
+    "canonical_name": "Bronchitis",
+    "aliases": ["acute bronchitis", "chest cold"],
+    "symptoms": ["cough", "mucus production", "chest discomfort", "mild fever", "fatigue"],
+    "causes": ["viral respiratory infection", "airway irritation from smoke or pollutants"],
+    "treatments": ["rest", "hydration", "symptom relief medicines", "medical review if prolonged"],
+    "precautions": ["avoid smoking", "hand hygiene", "reduce exposure to respiratory irritants"],
+    "red_flags": ["shortness of breath", "high fever", "coughing blood", "persistent chest pain"],
+    "source_name": "CDC",
+    "source_url": "https://www.cdc.gov/acute-bronchitis/about/index.html"
+  },
+  "influenza": {
+    "canonical_name": "Influenza",
+    "aliases": ["flu", "seasonal flu"],
+    "symptoms": ["fever", "cough", "sore throat", "body ache", "fatigue"],
+    "causes": ["influenza virus infection"],
+    "treatments": ["rest", "hydration", "antiviral medicines for selected cases"],
+    "precautions": ["annual vaccination", "hand hygiene", "masking when symptomatic"],
+    "red_flags": ["breathing difficulty", "persistent chest pain", "confusion", "dehydration"],
+    "source_name": "CDC",
+    "source_url": "https://www.cdc.gov/flu/index.htm"
+  },
+  "tuberculosis": {
+    "canonical_name": "Tuberculosis",
+    "aliases": ["tb"],
+    "symptoms": ["chronic cough", "fever", "night sweats", "weight loss", "fatigue"],
+    "causes": ["Mycobacterium tuberculosis infection"],
+    "treatments": ["combination anti-tuberculosis antibiotics", "treatment adherence for full duration"],
+    "precautions": ["early diagnosis", "ventilation", "respiratory hygiene", "close-contact screening"],
+    "red_flags": ["coughing blood", "severe breathing difficulty", "rapid weight loss"],
+    "source_name": "WHO",
+    "source_url": "https://www.who.int/news-room/fact-sheets/detail/tuberculosis"
+  },
+  "migraine": {
+    "canonical_name": "Migraine",
+    "aliases": ["migraine headache"],
+    "symptoms": ["throbbing headache", "nausea", "light sensitivity", "sound sensitivity"],
+    "causes": ["neurovascular dysregulation", "genetic predisposition", "trigger factors"],
+    "treatments": ["acute pain medicines", "preventive medicines", "trigger management"],
+    "precautions": ["regular sleep", "hydration", "stress management", "avoid personal triggers"],
+    "red_flags": ["sudden worst headache", "new neurologic deficit", "fever with neck stiffness"],
+    "source_name": "NINDS",
+    "source_url": "https://www.ninds.nih.gov/health-information/disorders/migraine"
+  },
+  "anemia": {
+    "canonical_name": "Anemia",
+    "aliases": ["low hemoglobin"],
+    "symptoms": ["fatigue", "pale skin", "shortness of breath", "dizziness"],
+    "causes": ["iron deficiency", "chronic disease", "blood loss", "vitamin deficiencies"],
+    "treatments": ["treat underlying cause", "iron or vitamin supplementation", "dietary correction"],
+    "precautions": ["balanced diet", "screening in high-risk groups", "follow-up blood tests"],
+    "red_flags": ["chest pain", "fainting", "rapid heartbeat", "severe weakness"],
+    "source_name": "WHO",
+    "source_url": "https://www.who.int/health-topics/anaemia"
+  },
+  "pneumonia": {
+    "canonical_name": "Pneumonia",
+    "aliases": ["lung infection"],
+    "symptoms": ["cough", "fever", "shortness of breath", "chest pain", "fatigue"],
+    "causes": ["bacterial infection", "viral infection", "less commonly fungal infection"],
+    "treatments": ["appropriate antimicrobials when indicated", "oxygen support if needed", "hydration and rest"],
+    "precautions": ["vaccination", "hand hygiene", "avoid smoking", "early medical evaluation"],
+    "red_flags": ["low oxygen", "confusion", "rapid breathing", "persistent high fever"],
+    "source_name": "WHO",
+    "source_url": "https://www.who.int/news-room/fact-sheets/detail/pneumonia"
+  },
+  "major depressive disorder": {
+    "canonical_name": "Major Depressive Disorder",
+    "aliases": ["depression", "clinical depression", "mdd"],
+    "symptoms": ["persistent sadness", "loss of interest", "low energy", "sleep disturbance", "poor concentration"],
+    "causes": ["multifactorial biological and psychosocial factors"],
+    "treatments": ["psychotherapy", "antidepressant medication when indicated", "structured follow-up"],
+    "precautions": ["early mental health support", "regular routine", "social support"],
+    "red_flags": ["thoughts of self-harm", "suicidal thoughts", "inability to perform basic daily activities"],
+    "source_name": "WHO",
+    "source_url": "https://www.who.int/news-room/fact-sheets/detail/depression"
+  },
+  "anxiety disorder": {
+    "canonical_name": "Anxiety Disorder",
+    "aliases": ["anxiety", "generalized anxiety"],
+    "symptoms": ["excessive worry", "restlessness", "palpitations", "sleep disturbance", "difficulty concentrating"],
+    "causes": ["multifactorial biological and psychosocial factors"],
+    "treatments": ["psychotherapy", "stress reduction strategies", "medication when indicated"],
+    "precautions": ["sleep hygiene", "regular exercise", "reduce stimulants", "follow-up care"],
+    "red_flags": ["panic with chest pain", "self-harm thoughts", "severe functional decline"],
+    "source_name": "WHO",
+    "source_url": "https://www.who.int/news-room/fact-sheets/detail/mental-disorders"
+  },
+  "gastroenteritis": {
+    "canonical_name": "Gastroenteritis",
+    "aliases": ["stomach flu", "acute gastroenteritis"],
+    "symptoms": ["diarrhea", "vomiting", "abdominal cramps", "fever"],
+    "causes": ["viral infection", "bacterial infection", "contaminated food or water"],
+    "treatments": ["oral rehydration", "electrolyte replacement", "medical assessment when severe"],
+    "precautions": ["safe food handling", "clean water", "hand hygiene"],
+    "red_flags": ["blood in stool", "severe dehydration", "persistent vomiting", "reduced urine output"],
+    "source_name": "CDC",
+    "source_url": "https://www.cdc.gov/norovirus/about/index.html"
+  },
+  "typhoid": {
+    "canonical_name": "Typhoid",
+    "aliases": ["typhoid fever", "enteric fever"],
+    "symptoms": ["prolonged fever", "abdominal pain", "weakness", "headache", "loss of appetite"],
+    "causes": ["Salmonella Typhi infection through contaminated food or water"],
+    "treatments": ["appropriate antibiotics", "hydration", "monitoring for complications"],
+    "precautions": ["safe water", "food hygiene", "vaccination in risk settings"],
+    "red_flags": ["persistent vomiting", "severe abdominal pain", "confusion", "intestinal bleeding signs"],
+    "source_name": "WHO",
+    "source_url": "https://www.who.int/news-room/fact-sheets/detail/typhoid"
+  },
+  "covid-19": {
+    "canonical_name": "COVID-19",
+    "aliases": ["covid", "coronavirus disease", "sars-cov-2 infection"],
+    "symptoms": ["fever", "cough", "sore throat", "fatigue", "loss of taste or smell", "shortness of breath"],
+    "causes": ["SARS-CoV-2 viral infection"],
+    "treatments": ["supportive care", "antiviral treatment for eligible patients", "oxygen support when severe"],
+    "precautions": ["vaccination", "masking in high-risk settings", "ventilation", "hand hygiene"],
+    "red_flags": ["breathing difficulty", "persistent chest pain", "confusion", "low oxygen saturation"],
+    "source_name": "WHO",
+    "source_url": "https://www.who.int/health-topics/coronavirus"
+  }
+}

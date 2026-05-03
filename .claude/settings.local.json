@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker-compose build *)",
+      "Bash(python tests/run_route_eval_60.py --timeout 30 --retries 2 --max-samples 60 --show-progress)",
+      "Bash(python tests/run_route_eval_60.py --timeout 30 --retries 2 --max-samples 60 --show-progress --compare)",
+      "Bash(docker-compose up *)"
+    ]
+  }
+}

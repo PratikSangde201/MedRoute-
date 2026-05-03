@@ -1,0 +1,106 @@
+services:
+  neo4j:
+    container_name: "neo4j"
+    image: neo4j:5.23
+    restart: unless-stopped
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      NEO4J_AUTH: "neo4j/${NEO4J_PASSWORD:-password}"
+      NEO4J_PLUGINS: '["apoc"]'
+      NEO4J_dbms_security_procedures_unrestricted: "apoc.*"
+      NEO4J_dbms_security_procedures_allowlist: "apoc.*"
+    volumes:
+      - neo4j_data:/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "cypher-shell -u neo4j -p '${NEO4J_PASSWORD:-password}' \"RETURN 1\" || exit 1",
+        ]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+      start_period: 40s
+
+  medical_neo4j_etl:
+    container_name: "medical_neo4j_etl"
+    build:
+      context: ./medical_neo4j_etl
+    env_file:
+      - .env
+    restart: "no"
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    environment:
+      NEO4J_URI: "neo4j://neo4j:7687"
+      NEO4J_USERNAME: "neo4j"
+      NEO4J_DATABASE: "neo4j"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  chatbot_api:
+    container_name: "chatbot_api"
+    restart: unless-stopped
+    build:
+      context: ./chatbot_api
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --workers 1 --log-level warning
+    env_file:
+      - .env
+    depends_on:
+      neo4j:
+        condition: service_healthy
+      medical_neo4j_etl:
+        condition: service_completed_successfully
+    ports:
+      - "8000:8000"
+    volumes:
+      - fastembed_cache:/root/.cache
+      - uploaded_files:/app/data/uploads
+    environment:
+      NEO4J_URI: "neo4j://neo4j:7687"
+      NEO4J_USERNAME: "neo4j"
+      NEO4J_DATABASE: "neo4j"
+      LLM_MODEL: "phi3:mini"
+      FAST_LLM_MODEL: "phi3:mini"
+      OLLAMA_BASE_URL: "http://host.docker.internal:11434"
+      INGEST_CONFIDENCE_THRESHOLD: "0.3"
+      INGEST_UPLOAD_DIR: "/app/data/uploads"
+      ENABLE_HYBRID_DEBUG_CONTEXT: "true"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+      - "ollama-host:host-gateway"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=5)"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 180s
+
+  chatbot_frontend:
+    container_name: "chatbot_frontend"
+    restart: unless-stopped
+    build:
+      context: ./chatbot_frontend
+    env_file:
+      - .env
+    depends_on:
+      chatbot_api:
+        condition: service_healthy
+    ports:
+      - "8501:8501"
+    environment:
+      CHATBOT_API_BASE_URL: "http://chatbot_api:8000"
+      CHATBOT_URL: "http://chatbot_api:8000/chatbot-rag-agent"
+      STREAMLIT_SERVER_ADDRESS: "0.0.0.0"
+      STREAMLIT_SERVER_PORT: "8501"
+      STREAMLIT_BROWSER_GATHER_USAGE_STATS: "false"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  fastembed_cache:
+  uploaded_files:
+  neo4j_data:

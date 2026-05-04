@@ -1,96 +1,140 @@
-# 🚑 MedRoute AI
+# 🚑 MedRoute — Adaptive Hybrid KG–RAG Medical Assistant
 
-Healthcare RAG assistant with intelligent routing, document vector retrieval, ingestion quality gates, and human-in-the-loop validation.
+An AI-powered healthcare query assistant that combines **Knowledge Graphs, Hybrid Retrieval, and Adaptive Routing** to deliver **accurate, context-aware, and explainable medical responses**.
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ System Architecture
 
 ```mermaid
 graph TD
-    U[User] --> S[Frontend UI]
-    S --> A[Backend API]
-    A --> R[Agent Router]
+    U[User / Clinician] --> F[Streamlit Frontend]
+    F --> B[FastAPI Backend]
 
-    R --> G[Medical RAG Agent]
-    R --> D[Documents Tool\nVector Retrieval]
-    R --> E[Routing Policy\nDecision Engine]
+    B --> R[Adaptive Query Router]
 
-    A --> I[Ingestion Pipeline]
-    I --> Q[Quality Layer\nValidation + Dedup + Confidence]
-    Q --> H[Human Review Layer]
+    R --> G[Graph Retrieval\n(Cypher - Neo4j)]
+    R --> K[BM25 Keyword Search]
+    R --> V[Vector Retrieval\n(Embeddings)]
+    R --> L[Direct LLM Response]
 
-    G --> K[(Knowledge Base)]
-    D --> K
-    E --> K
-```
+    G --> M[RRF Fusion Layer]
+    K --> M
+    V --> M
 
----
+    M --> A[LLM (Ollama)]
+    L --> A
 
+    A --> O[Final Response + Validation Layer]
 ## 🚀 Key Features
 
-* Async ingestion jobs for **PDF / TXT / JSON / MD**
-* Medical **RAG-based retrieval system** for accurate responses
-* **Agent routing policy** for intelligent query handling
-* Document **vector-based retrieval pipeline**
-* **Quality validation layer** with:
+### 🧠 Hybrid Retrieval System
+- Graph-based retrieval (Neo4j Cypher queries)
+- BM25 keyword search
+- Vector similarity search
 
-  * Data validation
-  * Duplicate detection
-  * Confidence threshold gating
-* **Human review system** for critical approval workflows
-* Built-in **evaluation pipeline** for testing system performance
+### 🔀 Adaptive Query Routing
+- Classifies queries into:
+  - Factual  
+  - Relational  
+  - Complex  
+  - General  
+- Dynamically selects optimal retrieval strategy
+
+### 🔗 Knowledge Graph Integration
+- Models relationships between diseases, symptoms, and treatments  
+- Enables multi-hop reasoning  
+
+### ⚡ Reciprocal Rank Fusion (RRF)
+- Combines multiple retrieval results  
+- Improves ranking accuracy and relevance  
+
+### 🤖 Local LLM (Ollama Integration)
+- Uses LLaMA-based models for response generation  
+- Ensures privacy and offline capability  
+
+### 🛡️ Low Hallucination Output
+- RAG grounding ensures factual consistency  
+- Observed **0% hallucination** in evaluation  
+
+### 📊 Evaluation Pipeline
+- 60-query benchmark testing  
+- Measures:
+  - Accuracy  
+  - Relevancy  
+  - Coverage  
+  - Routing Precision  
 
 ---
 
 ## 📌 Problem Statement
 
-Healthcare assistants today often:
+Traditional healthcare search systems:
 
-* Provide generic or unreliable responses
-* Lack domain-specific knowledge grounding
-* Cannot validate or filter incorrect information
+- ❌ Fail to understand user intent  
+- ❌ Cannot handle relational medical queries  
+- ❌ Provide unverified or generic responses  
+- ❌ Lack contextual reasoning  
 
 ---
 
-## 💡 Solution
+## 💡 Proposed Solution
 
-**MedRoute AI** combines:
+**MedRoute** introduces a hybrid architecture that combines:
 
-* Retrieval-Augmented Generation (RAG)
-* Intelligent routing logic
-* Structured ingestion with quality gates
+- Knowledge Graph reasoning  
+- Multi-channel retrieval (Graph + BM25 + Vector)  
+- Adaptive query routing  
+- Retrieval-Augmented Generation (RAG)  
 
-to deliver **accurate, safe, and context-aware medical assistance**.
+👉 Result: **Accurate, explainable, and context-aware healthcare responses**
+
+---
+
+## 📊 Performance Highlights
+
+| Metric | Value |
+|--------|------|
+| Accuracy | **68.7%** |
+| Relevancy | **71.8%** |
+| Coverage | **74.7%** |
+| Routing Precision | **100%** |
+| Hallucination Rate | **0%** |
+
+---
+
+### 🔍 Key Observations
+
+- Adaptive routing improves completeness (**4.08 vs 3.74**)  
+- Complex queries remain most challenging  
+- Hybrid retrieval significantly boosts relevance  
 
 ---
 
 ## 🛠️ Tech Stack
 
 ### Backend
-
-* Python
-* FastAPI
+- Python  
+- FastAPI  
 
 ### Frontend
+- Streamlit  
 
-* Python-based UI
+### AI / ML
+- LangChain  
+- Ollama (LLaMA 3 / local LLM)  
+- RAG Pipeline  
 
-### AI/ML
+### Database
+- Neo4j Graph Database  
+- Vector Embeddings (Neo4j / local)
 
-* Large Language Models (LLMs)
-* Retrieval-Augmented Generation (RAG)
+### Retrieval
+- BM25  
+- Dense Vector Search  
+- Cypher Query Engine  
 
-### Data
-
-* Vector retrieval systems
-* JSON evaluation datasets
-
----
-
-## 📂 Project Structure
-
-```bash
+📂 Project Structure
 MED-ROUTE-final/
 │
 ├── chatbot_api/
@@ -108,93 +152,33 @@ MED-ROUTE-final/
 │   └── run_route_eval_60.py
 │
 └── README.md
-```
 
----
-
-## ⚙️ Setup & Installation
-
-### 1. Clone the repository
-
-```bash
+1. Clone the repository
 git clone https://github.com/PratikSangde201/MedRoute-.git
 cd MedRoute-
-```
-
-### 2. Create virtual environment
-
-```bash
+2. Create virtual environment
 python -m venv venv
 venv\Scripts\activate   # Windows
-```
-
-### 3. Install dependencies
-
-```bash
+3. Install dependencies
 pip install -r requirements.txt
-```
-
-### 4. Run Backend
-
-```bash
+4. Run Backend
 cd chatbot_api/src
 python main.py
-```
-
-### 5. Run Frontend
-
-```bash
+5. Run Frontend
 cd chatbot_frontend/src
 python main.py
-```
 
----
-
-## 🧪 Evaluation
-
-```bash
+🧪 Evaluation
 python tests/run_route_eval_60.py
-```
-
 Used to measure routing accuracy and response performance.
 
----
-
-## 🔄 Workflow
-
-```text
+🔄 Workflow
 User → Frontend → Backend → Router → RAG → Response
-```
+🔮 Future Enhancements
+Real-time hospital/emergency integration
+Location-based intelligent routing
+Voice-enabled assistant
+Mobile application support
 
----
 
-## 🔮 Future Enhancements
 
-* Real-time hospital/emergency integration
-* Location-based intelligent routing
-* Voice-enabled assistant
-* Mobile application support
-
----
-
-## 👨‍💻 Author
-
-* Pratik Sangde
-
----
-
-## 📄 License
-
-Academic project (BE Final Year)
-
----
-
-## ⭐ Conclusion
-
-**MedRoute AI** demonstrates a robust healthcare assistant system by combining:
-
-* Intelligent routing
-* Retrieval-based AI
-* Quality-controlled ingestion
-
-to deliver reliable, scalable, and real-world medical assistance.

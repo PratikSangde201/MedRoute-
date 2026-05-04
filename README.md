@@ -1,31 +1,39 @@
 # 🚑 MedRoute — Adaptive Hybrid KG–RAG Medical Assistant
 
-An AI-powered healthcare query assistant that combines **Knowledge Graphs, Hybrid Retrieval, and Adaptive Routing** to deliver **accurate, context-aware, and explainable medical responses**.
+## 📌 Overview
+
+MedRoute is an intelligent healthcare assistant that combines **Knowledge Graphs (Neo4j)** with **Retrieval-Augmented Generation (RAG)** and **adaptive query routing** to provide accurate, context-aware, and reliable medical responses.
 
 ---
+
 
 ## 🏗️ System Architecture
 
 ```mermaid
 graph TD
-    U[User / Clinician] --> F[Streamlit Frontend]
-    F --> B[FastAPI Backend]
+    A[User] --> B[Streamlit Frontend]
+    B --> C[FastAPI Backend]
+    C --> D[Adaptive Query Router]
 
-    B --> R[Adaptive Query Router]
+    D --> E[Graph Retrieval - Neo4j]
+    D --> F[BM25 Keyword Search]
+    D --> G[Vector Retrieval]
+    D --> H[Direct LLM]
 
-    R --> G[Graph Retrieval\n(Cypher - Neo4j)]
-    R --> K[BM25 Keyword Search]
-    R --> V[Vector Retrieval\n(Embeddings)]
-    R --> L[Direct LLM Response]
+    E --> I[Reciprocal Rank Fusion]
+    F --> I
+    G --> I
 
-    G --> M[RRF Fusion Layer]
-    K --> M
-    V --> M
+    I --> J[LLM - Ollama]
+    H --> J
 
-    M --> A[LLM (Ollama)]
-    L --> A
+    J --> K[Validation Layer]
+    K --> L[Final Response]
 
-    A --> O[Final Response + Validation Layer]
+    L --> B
+```
+
+
 ## 🚀 Key Features
 
 ### 🧠 Hybrid Retrieval System
@@ -65,120 +73,72 @@ graph TD
   - Coverage  
   - Routing Precision  
 
----
+## 📂 Project Structure
 
-## 📌 Problem Statement
-
-Traditional healthcare search systems:
-
-- ❌ Fail to understand user intent  
-- ❌ Cannot handle relational medical queries  
-- ❌ Provide unverified or generic responses  
-- ❌ Lack contextual reasoning  
-
----
-
-## 💡 Proposed Solution
-
-**MedRoute** introduces a hybrid architecture that combines:
-
-- Knowledge Graph reasoning  
-- Multi-channel retrieval (Graph + BM25 + Vector)  
-- Adaptive query routing  
-- Retrieval-Augmented Generation (RAG)  
-
-👉 Result: **Accurate, explainable, and context-aware healthcare responses**
-
----
-
-## 📊 Performance Highlights
-
-| Metric | Value |
-|--------|------|
-| Accuracy | **68.7%** |
-| Relevancy | **71.8%** |
-| Coverage | **74.7%** |
-| Routing Precision | **100%** |
-| Hallucination Rate | **0%** |
-
----
-
-### 🔍 Key Observations
-
-- Adaptive routing improves completeness (**4.08 vs 3.74**)  
-- Complex queries remain most challenging  
-- Hybrid retrieval significantly boosts relevance  
-
----
-
-## 🛠️ Tech Stack
-
-### Backend
-- Python  
-- FastAPI  
-
-### Frontend
-- Streamlit  
-
-### AI / ML
-- LangChain  
-- Ollama (LLaMA 3 / local LLM)  
-- RAG Pipeline  
-
-### Database
-- Neo4j Graph Database  
-- Vector Embeddings (Neo4j / local)
-
-### Retrieval
-- BM25  
-- Dense Vector Search  
-- Cypher Query Engine  
-
-📂 Project Structure
+```bash
 MED-ROUTE-final/
 │
 ├── chatbot_api/
 │   ├── src/
-│   │   ├── agents/
-│   │   ├── ingest/
-│   │   ├── retrieval/
-│   │   └── main.py
+│   │   ├── agents/           # Routing + AI logic
+│   │   ├── retrieval/        # Graph, BM25, Vector
+│   │   ├── ingest/           # Data pipeline
+│   │   └── main.py           # FastAPI server
 │
 ├── chatbot_frontend/
-│   └── src/
+│   └── src/                  # Streamlit UI
 │
 ├── tests/
 │   ├── eval/
-│   └── run_route_eval_60.py
+│   └── run_route_eval_60.py  # Evaluation script
 │
 └── README.md
+```
+## 📊 Performance Highlights
 
-1. Clone the repository
-git clone https://github.com/PratikSangde201/MedRoute-.git
-cd MedRoute-
-2. Create virtual environment
-python -m venv venv
-venv\Scripts\activate   # Windows
-3. Install dependencies
-pip install -r requirements.txt
-4. Run Backend
-cd chatbot_api/src
-python main.py
-5. Run Frontend
-cd chatbot_frontend/src
-python main.py
+| Metric | Value |
+|--------|------|
+| Accuracy | 68.7% |
+| Relevancy | 71.8% |
+| Coverage | 74.7% |
+| Routing Precision | 100% |
+| Hallucination Rate | 0% |
 
-🧪 Evaluation
-python tests/run_route_eval_60.py
-Used to measure routing accuracy and response performance.
+---
 
-🔄 Workflow
-User → Frontend → Backend → Router → RAG → Response
-🔮 Future Enhancements
-Real-time hospital/emergency integration
-Location-based intelligent routing
-Voice-enabled assistant
-Mobile application support
+## 🔍 Key Observations
+
+- Adaptive routing improves response completeness (**4.08 vs 3.74**)  
+- Complex queries remain the most challenging due to multi-step reasoning  
+- Hybrid retrieval significantly enhances relevance and coverage  
+- Graph-based retrieval improves performance for relational queries  
+- RAG grounding ensures low hallucination and reliable outputs  
+- System maintains stable performance across different query types  
+
+---
+
+## 🔄 Workflow
+```text
+User → Frontend → FastAPI → Query Router → Hybrid Retrieval (KG + BM25 + Vector) → RRF → LLM → Response
+```
+
+
+## 🧪 Example Query
+
+```text
+What are the symptoms and treatments of Acne?
+```
+
+### 👉 System Flow
+
+- Classifies → **Factual Query**  
+- Retrieves → **Graph + BM25 Retrieval**  
+- Generates → **Context-aware response using RAG**  
+
+
+
+
+
 
 
 

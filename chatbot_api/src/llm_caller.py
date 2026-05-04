@@ -280,16 +280,31 @@ def build_prompt(query: str, context: str = "", route: str = "") -> str:
     if r == "RELATIONAL":
         instruction = _build_relational_instruction(query, entities)
         ctx_part = f"\nRelevant medical context:\n{ctx}\n" if ctx else ""
-        return f"{system}{ctx_part}\n\nQuestion: {query}\n{instruction}\nAnswer:"
+        bullet_hint = (
+            "\nAfter your main answer, list 2-3 key clinical points as bullet points using '- '."
+            " Each bullet must use the specific medical terms from the context"
+            " (e.g. drug names, lab markers, pathological terms such as nephropathy, HbA1c, isoniazid)."
+        )
+        return f"{system}{ctx_part}\n\nQuestion: {query}\n{instruction}{bullet_hint}\nAnswer:"
 
     if r == "COMPLEX":
         instruction = _build_complex_instruction(entities)
         ctx_part = f"\nRelevant medical context:\n{ctx}\n" if ctx else ""
-        return f"{system}{ctx_part}\n\nQuestion: {query}\n{instruction}\nAnswer:"
+        bullet_hint = (
+            "\nAfter your main answer, list 2-3 key comparative points as bullet points using '- '."
+            " Each bullet must name the specific clinical or pathological term"
+            " (e.g. organ system, biomarker, complication name) rather than general language."
+        )
+        return f"{system}{ctx_part}\n\nQuestion: {query}\n{instruction}{bullet_hint}\nAnswer:"
 
     if r == "GENERAL":
         instruction = _build_general_instruction(query)
-        return f"{system}\n\nQuestion: {query}\n{instruction}\nAnswer:"
+        bullet_hint = (
+            "\nThen summarize 2-3 key points as bullet points using '- '."
+            " Each bullet must include the specific medical term, drug name, or lab value"
+            " most relevant to the question."
+        )
+        return f"{system}\n\nQuestion: {query}\n{instruction}{bullet_hint}\nAnswer:"
 
     # FACTUAL / HYBRID — use query-aware instruction
     instruction = _build_factual_instruction(query, entities)

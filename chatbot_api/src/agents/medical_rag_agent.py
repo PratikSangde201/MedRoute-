@@ -260,6 +260,11 @@ def _friendly_list(items: list[str], max_items: int | None = None) -> str:
     return ", ".join(clean[:max_items])
 
 
+def _bullet_list(items: list[str], max_items: int = 15) -> str:
+    clean = sorted(dict.fromkeys(item.strip().replace("_", " ").capitalize() for item in items if item and item.strip()))
+    return "\n".join(f"- {item}" for item in clean[:max_items])
+
+
 def _fetch_disease_profile(graph: Neo4jGraph, disease_name: str) -> dict[str, list[str]]:
     rows = graph.query(
         """
@@ -366,25 +371,33 @@ def _direct_graph_answer(input_text: str) -> str | None:
         precautions = profile.get("precautions", [])
 
         if symptom_intent and not precaution_intent:
-            symptom_text = _friendly_list(symptoms)
-            if symptom_text:
-                return f"**Symptoms of {disease_name}:**\n{symptom_text}.\n\nPlease consult a healthcare professional for personalized medical advice."
+            if symptoms:
+                bullet_text = _bullet_list(symptoms)
+                return (
+                    f"**Symptoms of {disease_name}** ({len(symptoms)} reported):\n"
+                    f"{bullet_text}\n\n"
+                    "Please consult a healthcare professional for personalized medical advice."
+                )
             return None
 
         if precaution_intent and not symptom_intent:
-            precaution_text = _friendly_list(precautions)
-            if precaution_text:
-                return f"**Precautions for {disease_name}:**\n{precaution_text}.\n\nPlease consult a healthcare professional for personalized medical advice."
+            if precautions:
+                bullet_text = _bullet_list(precautions)
+                return (
+                    f"**Precautions for {disease_name}** ({len(precautions)} recommended):\n"
+                    f"{bullet_text}\n\n"
+                    "Please consult a healthcare professional for personalized medical advice."
+                )
             return None
 
         sections: list[str] = [f"**{disease_name}**"]
         if symptoms:
-            sections.append(f"Symptoms: {_friendly_list(symptoms)}.")
+            sections.append(f"**Symptoms** ({len(symptoms)} reported):\n{_bullet_list(symptoms)}")
         if precautions:
-            sections.append(f"Precautions: {_friendly_list(precautions)}.")
+            sections.append(f"**Precautions** ({len(precautions)} recommended):\n{_bullet_list(precautions)}")
         if len(sections) > 1:
             sections.append("Please consult a healthcare professional for personalized medical advice.")
-            return "\n".join(sections)
+            return "\n\n".join(sections)
         return None
 
     # Diseases with a specific symptom

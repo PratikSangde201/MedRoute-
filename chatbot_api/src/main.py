@@ -94,6 +94,7 @@ from src.utils.response_policy import (
 from src.ingest.pdf_ingest import (
     extract_text_from_pdf_bytes, classify_medical_text,
     extract_structured_medical_entities, insert_into_neo4j,
+    list_ingested_diseases, delete_disease_from_neo4j,
 )
 
 app = FastAPI(
@@ -435,7 +436,7 @@ async def chatbot_endpoint(request: Request):
                     graph_answer = await asyncio.to_thread(_direct_graph_answer, effective_query)
                     if graph_answer:
                         print(f"[FACTUAL] neo4j_fast_path hit q={effective_query[:60]}", flush=True)
-                        sources = [{"content": graph_answer[:400], "metadata": {"source": "neo4j_graph"}}]
+                        sources = [{"content": graph_answer[:500], "metadata": {"source": "neo4j_graph"}}]
                         return {
                             "answer":           graph_answer,
                             "output":           graph_answer,
@@ -446,60 +447,63 @@ async def chatbot_endpoint(request: Request):
                             "routing_enabled":  routing,
                         }
 
-                    # DocumentChunks → BM25 → LLM (short output for speed)
-                    chunk_docs = await asyncio.to_thread(_query_document_chunks, effective_query, 2)
-                    all_docs = bm25_retrieve_sync(effective_query, top_k=3)
+                    # DocumentChunks → BM25 → LLM
+                    chunk_docs = await asyncio.to_thread(_query_document_chunks, effective_query, 3)
+                    all_docs = bm25_retrieve_sync(effective_query, top_k=4)
                     combined_docs = chunk_docs + all_docs
-                    context = select_best_doc(combined_docs, effective_query, char_limit=500)
+                    context = select_best_doc(combined_docs, effective_query, char_limit=600)
                     if context:
                         src = "document_chunk" if chunk_docs and any(
                             context[:100] in d.get("content", "") for d in chunk_docs
                         ) else "adaptive_factual"
                         docs = [{"content": context, "metadata": {"source": src}}]
-                    answer = await call_llm_with_retry(effective_query, context, num_predict=90, route=route)
+                    answer = await call_llm_with_retry(effective_query, context, num_predict=120, route=route)
 
                 elif route == "RELATIONAL":
                     entities = extract_disease_entities(effective_query)
                     print(f"[RELATIONAL] entities={entities} q={effective_query[:60]}", flush=True)
-                    all_docs = bm25_retrieve_sync(effective_query, top_k=5)
-                    chunk_docs = await asyncio.to_thread(_query_document_chunks, effective_query, 2)
+                    all_docs = bm25_retrieve_sync(effective_query, top_k=6)
+                    chunk_docs = await asyncio.to_thread(_query_document_chunks, effective_query, 3)
                     combined_docs = chunk_docs + all_docs
                     context = select_entity_focused_docs(
-                        combined_docs, effective_query, entities, char_limit_each=350
+                        combined_docs, effective_query, entities, char_limit_each=450
                     )
                     if context:
                         docs = [{"content": context, "metadata": {
                             "source": "adaptive_relational_entity_focused",
                             "entities": entities,
                         }}]
-                    answer = await call_llm_with_retry(effective_query, context, num_predict=140, route=route)
+                    answer = await call_llm_with_retry(effective_query, context, num_predict=190, route=route)
 
                 elif route == "COMPLEX":
+                    # Entity-focused context so comparison queries get info about BOTH diseases
                     entities = extract_disease_entities(effective_query)
-                    all_docs = bm25_retrieve_sync(effective_query, top_k=5)
-                    chunk_docs = await asyncio.to_thread(_query_document_chunks, effective_query, 2)
+                    all_docs = bm25_retrieve_sync(effective_query, top_k=7)
+                    chunk_docs = await asyncio.to_thread(_query_document_chunks, effective_query, 3)
                     combined_docs = chunk_docs + all_docs
-                    context = select_best_doc(combined_docs, effective_query, char_limit=550)
+                    context = select_entity_focused_docs(
+                        combined_docs, effective_query, entities, char_limit_each=400
+                    )
                     if context:
                         docs = [{"content": context, "metadata": {
                             "source": "adaptive_complex",
                             "entities": entities,
                         }}]
-                    answer = await call_llm_with_retry(effective_query, context, num_predict=180, route=route)
+                    answer = await call_llm_with_retry(effective_query, context, num_predict=200, route=route)
 
                 elif route == "GENERAL":
-                    all_docs   = bm25_retrieve_sync(effective_query, top_k=3)
+                    all_docs   = bm25_retrieve_sync(effective_query, top_k=4)
                     chunk_docs = await asyncio.to_thread(_query_document_chunks, effective_query, 2)
                     combined_docs = chunk_docs + all_docs
-                    context = select_best_doc(combined_docs, effective_query, char_limit=400)
+                    context = select_best_doc(combined_docs, effective_query, char_limit=500)
                     if context:
                         docs = [{"content": context, "metadata": {"source": "general_data_source"}}]
-                        answer = await call_llm_with_retry(effective_query, context, num_predict=140, route=route)
+                        answer = await call_llm_with_retry(effective_query, context, num_predict=180, route=route)
                     else:
                         docs = []
-                        answer = await call_llm_knowledge_only(effective_query, num_predict=140)
+                        answer = await call_llm_knowledge_only(effective_query, num_predict=180)
                         if not answer or len(answer) < 30:
-                            answer = await call_llm_with_retry(effective_query, "", num_predict=140, route=route)
+                            answer = await call_llm_with_retry(effective_query, "", num_predict=150, route=route)
 
                 else:
                     all_docs = bm25_retrieve_sync(effective_query, top_k=3)
@@ -607,6 +611,28 @@ async def ingest_reject(job_id: str):
     if not job:
         raise HTTPException(status_code=404, detail=f"Job '{job_id}' not found")
     return job.model_dump()
+
+
+@app.get("/ingest/diseases")
+async def list_diseases():
+    try:
+        diseases = await asyncio.to_thread(list_ingested_diseases)
+        return {"diseases": diseases, "count": len(diseases)}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.delete("/ingest/disease/{disease_name}")
+async def delete_disease(disease_name: str):
+    try:
+        result = await asyncio.to_thread(delete_disease_from_neo4j, disease_name)
+        if not result.get("found"):
+            raise HTTPException(status_code=404, detail=f"Disease '{disease_name}' not found in knowledge graph")
+        return {"deleted": True, "disease": disease_name, **result}
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
 
 
 @app.get("/graph/disease/{disease_name}")

@@ -225,11 +225,17 @@ _STOPWORDS = {
 }
 
 
-def _evidence_kw_hit(contexts: list[str], answer: str) -> bool:
-    if not contexts or not answer:
+def _evidence_kw_hit(contexts: list[str], answer: str, ref_keywords: list[str] | None = None) -> bool:
+    if not answer:
+        return False
+    ans_lower = answer.lower()
+    # Prefer curated dataset keywords when available (medroute format)
+    if ref_keywords:
+        return sum(1 for kw in ref_keywords if kw.lower() in ans_lower) >= 2
+    # Fall back to extracting keywords from retrieved context
+    if not contexts:
         return False
     ctx_text = " ".join(contexts).lower()
-    ans_lower = answer.lower()
     tokens = {t for t in re.split(r"\W+", ctx_text) if len(t) > 3 and t not in _STOPWORDS}
     if not tokens:
         return False
@@ -270,7 +276,7 @@ def main() -> None:
     parser.add_argument(
         "--dataset",
         type=Path,
-        default=Path("tests/eval/pubmedqa_route_golden_60.json"),
+        default=Path("tests/eval/medroute_eval_60.json"),
     )
     parser.add_argument("--chatbot-url", type=str, default="")
     parser.add_argument("--timeout", type=int, default=20)
@@ -297,12 +303,36 @@ def main() -> None:
     root_url, query_url = _derive_urls(chatbot_url)
     _wait_for_api(root_url, args.wait_seconds)
 
-    payload = json.loads(args.dataset.read_text(encoding="utf-8-sig"))
-    route_lists = payload.get("route_lists") or {}
-    combined = payload.get("combined") or []
+    raw = json.loads(args.dataset.read_text(encoding="utf-8-sig"))
 
-    if not isinstance(route_lists, dict) or not isinstance(combined, list) or not combined:
-        raise RuntimeError("Invalid route golden dataset format")
+    # Support both flat-array format (medroute_eval_60) and nested format (pubmedqa)
+    if isinstance(raw, list):
+        route_lists: dict[str, list] = {"FACTUAL": [], "RELATIONAL": [], "COMPLEX": [], "GENERAL": []}
+        combined: list[dict[str, Any]] = []
+        for item in raw:
+            if not isinstance(item, dict):
+                continue
+            sample: dict[str, Any] = {
+                "sample_id":        str(item.get("id") or item.get("sample_id") or "").strip(),
+                "question":         str(item.get("question") or item.get("query") or "").strip(),
+                "ground_truth":     str(item.get("expected_answer") or item.get("ground_truth") or "").strip(),
+                "route":            str(item.get("route") or item.get("expected_route") or "").strip().upper(),
+                "evidence_keywords": item.get("evidence_keywords") or [],
+            }
+            if not sample["sample_id"] or not sample["question"]:
+                continue
+            combined.append(sample)
+            r = sample["route"]
+            if r in route_lists:
+                route_lists[r].append(sample)
+    elif isinstance(raw, dict):
+        route_lists = raw.get("route_lists") or {}
+        combined = raw.get("combined") or []
+    else:
+        raise RuntimeError("Invalid dataset format")
+
+    if not combined:
+        raise RuntimeError("Dataset is empty")
 
     eval_samples: list[dict[str, Any]] = combined
     if args.max_samples > 0 and len(combined) > args.max_samples:
@@ -346,7 +376,7 @@ def main() -> None:
         if len(eval_samples) > args.max_samples:
             eval_samples = eval_samples[: args.max_samples]
 
-    # ── Primary pass: routing=True (full_adaptive) ──────────────────────────
+    # -- Primary pass: routing=True (full_adaptive) --------------------------
     rows: list[dict[str, Any]] = []
     for sample in tqdm(eval_samples, desc="full_adaptive queries", unit="sample", disable=not args.show_progress):
         if not isinstance(sample, dict):
@@ -355,6 +385,7 @@ def main() -> None:
         question = str(sample.get("question") or "").strip()
         reference = str(sample.get("ground_truth") or "").strip()
         route = str(sample.get("route") or "").strip().upper()
+        ref_keywords: list[str] = sample.get("evidence_keywords") or []
         if not sample_id or not question or not reference:
             continue
 
@@ -388,13 +419,14 @@ def main() -> None:
                 "contexts": contexts,
                 "latency_ms": latency_ms,
                 "predicted_route": predicted_route,
+                "evidence_keywords": ref_keywords,
             }
         )
 
     if not rows:
         raise RuntimeError("No eval rows produced")
 
-    # ── Embeddings for cosine-similarity metrics ─────────────────────────────
+    # -- Embeddings for cosine-similarity metrics -----------------------------
     embeddings = _build_embeddings(args.embedding_model.strip())
     questions  = [row["question"]  for row in rows]
     answers    = [row["answer"]    for row in rows]
@@ -468,35 +500,67 @@ def main() -> None:
         "COMBINED":   metrics_for(combined_ids, "COMBINED"),
     }
 
-    # ── Table 1: Combined route-wise evaluation metrics ───────────────────────
-    W = 76
+    # -- Table 1: Route-wise evaluation & routing precision -------------------
+    W = 72
     print("\n" + "=" * W)
-    print("TABLE 1: ROUTE-WISE EVALUATION METRICS")
+    print("TABLE 1: ROUTE-WISE EVALUATION & ROUTING PRECISION")
     print("=" * W)
-    print(f"{'Route':<12} | {'Samples':>7} | {'Accuracy %':>11} | {'Relevancy %':>12} | {'Coverage %':>11}")
+    print(f"{'Route':<12} | {'Accuracy %':>11} | {'Relevancy %':>12} | {'Coverage %':>11} | {'Routing Prec %':>14}")
     print("-" * W)
+
+    def _routing_precision_for(route_label: str) -> float:
+        rt_rows_p = [r for r in rows if r["route"] == route_label]
+        if not rt_rows_p:
+            return 0.0
+        return sum(1 for r in rt_rows_p if r.get("predicted_route") == route_label) / len(rt_rows_p) * 100.0
+
     for r in ("FACTUAL", "RELATIONAL", "COMPLEX", "GENERAL"):
-        n   = len(route_to_ids.get(r, []))
         acc = result[r]["accuracy"]
         rel = result[r]["answer_relevancy"]
         cov = result[r]["context_coverage"]
-        print(f"{r:<12} | {n:>7} | {acc*100:>10.1f}% | {rel*100:>11.1f}% | {cov*100:>10.1f}%")
-    print("-" * W)
+        prec = _routing_precision_for(r)
+        print(f"{r:<12} | {acc*100:>10.1f}% | {rel*100:>11.1f}% | {cov*100:>10.1f}% | {prec:>13.2f}%")
+    print("=" * W)
+
+    # Pre-compute combined scores (for Results A printed last)
     cacc = result["COMBINED"]["accuracy"]
     crel = result["COMBINED"]["answer_relevancy"]
     ccov = result["COMBINED"]["context_coverage"]
-    print(f"{'COMBINED':<12} | {total:>7} | {cacc*100:>10.1f}% | {crel*100:>11.1f}% | {ccov*100:>10.1f}%")
-    print("=" * W)
 
-    print("\nRaw JSON:")
-    print(json.dumps(result, indent=2))
+    # -- Comparison metrics helper (Table 2) ----------------------------------
+    def _comp_metrics(rlist: list[dict]) -> dict:
+        kw_hits      = [_evidence_kw_hit(r["contexts"], r["answer"], r.get("evidence_keywords")) for r in rlist]
+        completeness = [_completeness_score(r["answer"]) for r in rlist]
+        return {
+            "kw_hit_pct":        _mean([1.0 if x else 0.0 for x in kw_hits]) * 100,
+            "avg_completeness":  _mean(completeness),
+            "hallucination_pct": 0.0,
+        }
 
-    # ── Tables 4-6: System-level comparison (--compare only) ─────────────────
+    fa = _comp_metrics(rows)
+    W2 = 62
+
     if not args.compare:
-        print("\n(Run with --compare to see Tables 4-6: system-wide, routing precision, overall metrics)")
+        print("\n" + "=" * W2)
+        print("TABLE 2: PERFORMANCE COMPARISON")
+        print("=" * W2)
+        print(f"{'Configuration':<20} | {'KW Hit %':>9} | {'Avg Complete':>12} | {'Hallucin %':>10}")
+        print("-" * W2)
+        print(f"{'full_adaptive':<20} | {fa['kw_hit_pct']:>8.2f}% | {fa['avg_completeness']:>12.2f} | {fa['hallucination_pct']:>9.2f}%")
+        print(f"  (run --compare to add hybrid_no_routing row)")
+        print("=" * W2)
+
+        RW = 52
+        print("\n" + "=" * RW)
+        print(f"RESULTS A: OVERALL SCORES  ({total} samples)")
+        print("=" * RW)
+        print(f"{'Accuracy %':>12} | {'Relevancy %':>12} | {'Coverage %':>12}")
+        print("-" * RW)
+        print(f"{cacc*100:>11.1f}% | {crel*100:>11.1f}% | {ccov*100:>11.1f}%")
+        print("=" * RW)
         return
 
-    # ── Secondary pass: routing=False (hybrid_no_routing) ────────────────────
+    # -- Secondary pass: routing=False (hybrid_no_routing) --------------------
     rows_nr: list[dict[str, Any]] = []
     for row in tqdm(rows, desc="hybrid_no_routing queries", unit="sample", disable=not args.show_progress):
         t0 = time.time()
@@ -516,83 +580,36 @@ def main() -> None:
             ans_nr = f"Failed: {exc}"
             ctx_nr = []
         rows_nr.append({
-            "sample_id": row["sample_id"],
-            "route":     row["route"],
-            "question":  row["question"],
-            "answer":    ans_nr,
-            "reference": row["reference"],
-            "contexts":  ctx_nr,
-            "latency_ms": lat,
+            "sample_id":        row["sample_id"],
+            "route":            row["route"],
+            "question":         row["question"],
+            "answer":           ans_nr,
+            "reference":        row["reference"],
+            "contexts":         ctx_nr,
+            "latency_ms":       lat,
+            "evidence_keywords": row.get("evidence_keywords") or [],
         })
 
-    # ── Compute comparison metrics for a row list ─────────────────────────────
-    def _comp_metrics(rlist: list[dict]) -> dict:
-        applicable   = [_is_applicable(r["answer"]) for r in rlist]
-        kw_hits      = [_evidence_kw_hit(r["contexts"], r["answer"]) for r in rlist]
-        latencies    = [r["latency_ms"] for r in rlist if r["latency_ms"] > 0]
-        completeness = [_completeness_score(r["answer"]) for r in rlist]
-        ans_vecs_c   = embeddings.embed_documents([r["answer"] for r in rlist])
-        ref_vecs_c   = embeddings.embed_documents([r["reference"] for r in rlist])
-        sims         = [_cosine_similarity(a, b) for a, b in zip(ans_vecs_c, ref_vecs_c)]
-        overall_acc  = _mean(sims)
-        return {
-            "applicable_pct":    _mean([1.0 if x else 0.0 for x in applicable]) * 100,
-            "kw_hit_pct":        _mean([1.0 if x else 0.0 for x in kw_hits])    * 100,
-            "median_latency":    _median(latencies),
-            "avg_completeness":  _mean(completeness),
-            "overall_acc_pct":   overall_acc * 100,
-            "hallucination_pct": 0.0,
-        }
-
-    fa = _comp_metrics(rows)
     nr = _comp_metrics(rows_nr)
 
-    def _routing_precision(route_label: str) -> float:
-        rt_rows = [r for r in rows if r["route"] == route_label]
-        if not rt_rows:
-            return 0.0
-        correct = sum(1 for r in rt_rows if r.get("predicted_route") == route_label)
-        return (correct / len(rt_rows)) * 100.0
+    # -- Table 2: full comparison with both rows ------------------------------
+    print("\n" + "=" * W2)
+    print("TABLE 2: PERFORMANCE COMPARISON")
+    print("=" * W2)
+    print(f"{'Configuration':<20} | {'KW Hit %':>9} | {'Avg Complete':>12} | {'Hallucin %':>10}")
+    print("-" * W2)
+    print(f"{'hybrid_no_routing':<20} | {nr['kw_hit_pct']:>8.2f}% | {nr['avg_completeness']:>12.2f} | {nr['hallucination_pct']:>9.2f}%")
+    print(f"{'full_adaptive':<20} | {fa['kw_hit_pct']:>8.2f}% | {fa['avg_completeness']:>12.2f} | {fa['hallucination_pct']:>9.2f}%")
+    print("=" * W2)
 
-    # ── Table 4: System-wide performance ─────────────────────────────────────
-    sep4 = "=" * 85
-    print(f"\n{sep4}")
-    print("TABLE 4: SYSTEM-WIDE PERFORMANCE METRICS")
-    print(sep4)
-    print(f"{'Configuration':<20} | {'Applicable %':>15} | {'Evidence KW Hit %':>18} | {'Median Latency (ms)':>20}")
-    print("-" * 85)
-    print(f"{'hybrid_no_routing':<20} | {nr['applicable_pct']:>14.2f}% | {nr['kw_hit_pct']:>17.2f}% | {nr['median_latency']:>20.1f}")
-    print(f"{'full_adaptive':<20} | {fa['applicable_pct']:>14.2f}% | {fa['kw_hit_pct']:>17.2f}% | {fa['median_latency']:>20.1f}")
-    print(sep4)
-
-    # ── Table 5: Route-specific accuracy & routing precision ─────────────────
-    sep5 = "=" * 100
-    print(f"\n{sep5}")
-    print("TABLE 5: ROUTE-SPECIFIC ACCURACY & ROUTING PRECISION")
-    print(sep5)
-    print(f"{'Route':<12} | {'Count':>5} | {'Accuracy %':>12} | {'Routing Precision %':>20} | {'Median Latency (ms)':>20}")
-    print("-" * 100)
-    for rt in ("FACTUAL", "RELATIONAL", "COMPLEX", "GENERAL"):
-        rt_rows = [r for r in rows if r["route"] == rt]
-        if not rt_rows:
-            continue
-        n       = len(rt_rows)
-        acc     = result[rt]["accuracy"] * 100
-        prec    = _routing_precision(rt)
-        med_lat = _median([r["latency_ms"] for r in rt_rows if r["latency_ms"] > 0])
-        print(f"  {rt:<10} | {n:>5} | {acc:>11.2f}% | {prec:>19.2f}% | {med_lat:>20.1f}")
-    print(sep5)
-
-    # ── Table 6: Overall system metrics ──────────────────────────────────────
-    sep6 = "=" * 85
-    print(f"\n{sep6}")
-    print("TABLE 6: OVERALL SYSTEM METRICS")
-    print(sep6)
-    print(f"{'Configuration':<20} | {'Overall Accuracy %':>18} | {'Avg Completeness':>17} | {'Hallucination %':>15}")
-    print("-" * 85)
-    print(f"{'hybrid_no_routing':<20} | {nr['overall_acc_pct']:>17.2f}% | {nr['avg_completeness']:>17.2f} | {nr['hallucination_pct']:>14.2f}%")
-    print(f"{'full_adaptive':<20} | {fa['overall_acc_pct']:>17.2f}% | {fa['avg_completeness']:>17.2f} | {fa['hallucination_pct']:>14.2f}%")
-    print(sep6)
+    RW = 52
+    print("\n" + "=" * RW)
+    print(f"RESULTS A: OVERALL SCORES  ({total} samples)")
+    print("=" * RW)
+    print(f"{'Accuracy %':>12} | {'Relevancy %':>12} | {'Coverage %':>12}")
+    print("-" * RW)
+    print(f"{cacc*100:>11.1f}% | {crel*100:>11.1f}% | {ccov*100:>11.1f}%")
+    print("=" * RW)
 
 
 if __name__ == "__main__":

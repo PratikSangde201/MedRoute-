@@ -7,7 +7,6 @@ from fastapi import UploadFile
 
 from ingest.pdf_ingest import (
     extract_text_from_pdf_bytes,
-    classify_medical_text,
     extract_structured_medical_entities,
     insert_into_neo4j,
 )
@@ -70,20 +69,40 @@ def _extract_text(file_bytes: bytes, content_type: str, filename: str) -> str:
     raise ValueError("Unsupported file type. Supported: PDF, TXT, CSV, MD")
 
 
+def _classify_heuristic(text: str) -> Dict[str, Any]:
+    """Keyword-based medical classifier — no LLM needed, always reliable."""
+    lower = text.lower()
+    keywords = [
+        "disease", "symptom", "symptoms", "treatment", "precaution", "diagnosis",
+        "patient", "medical", "clinical", "infection", "fever", "pain", "health",
+        "medicine", "drug", "therapy", "syndrome", "disorder", "condition",
+        "doctor", "hospital", "prescription", "dosage", "pathology",
+    ]
+    hits = sum(1 for kw in keywords if kw in lower)
+    score = min(1.0, round(hits / 5.0, 2))
+    return {
+        "is_medical": hits >= 2,
+        "score": score,
+        "explanation": f"{hits} medical keywords found in document",
+    }
+
+
 async def run_ingestion(job_id: str, file_bytes: bytes, content_type: str, filename: str) -> None:
     await update_job(job_id, status="processing")
 
     try:
         text = await asyncio.to_thread(_extract_text, file_bytes, content_type, filename)
         await update_job(job_id, extracted_text=text)
-        classification = await asyncio.to_thread(classify_medical_text, text)
+
+        # Fast keyword classification — no LLM, always reliable
+        classification = _classify_heuristic(text)
         await update_job(job_id, classification=classification)
 
         if not classification.get("is_medical"):
             await update_job(
                 job_id,
                 status="rejected",
-                error_message="Document not classified as medical",
+                error_message="Document does not appear to contain medical content.",
             )
             return
 
@@ -99,25 +118,12 @@ async def run_ingestion(job_id: str, file_bytes: bytes, content_type: str, filen
             dedup_result,
         )
 
-        if not validation_result.get("is_valid") or confidence_score < INGEST_CONFIDENCE_THRESHOLD:
-            await update_job(
-                job_id,
-                status="rejected",
-                structured=structured,
-                entities_extracted=entities_extracted,
-                validation_result=validation_result,
-                dedup_result=dedup_result,
-                confidence_score=confidence_score,
-                error_message=(
-                    f"Rejected by quality gate. confidence={confidence_score}, "
-                    f"threshold={INGEST_CONFIDENCE_THRESHOLD}"
-                ),
-            )
-            return
-
+        # Always go to review_needed — let the user approve or discard.
+        # The quality gate was auto-rejecting valid medical docs because
+        # phi3:mini returns inconsistent JSON for the extraction prompt.
         await update_job(
             job_id,
-            status="review",
+            status="review_needed",
             structured=structured,
             entities_extracted=entities_extracted,
             validation_result=validation_result,
@@ -204,7 +210,7 @@ async def approve_job(
 
         await update_job(
             job_id,
-            status="completed",
+            status="approved",
             structured=structured_payload,
             inserted={**inserted, **document_inserted},
         )

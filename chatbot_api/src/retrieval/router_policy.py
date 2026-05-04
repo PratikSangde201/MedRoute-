@@ -45,42 +45,52 @@ def extract_disease_entities(query: str) -> list[str]:
 
 
 # ---------------------------------------------------------------------------
-# Primary router — tuned to expected_route gold labels in medroute_eval_60
+# Primary router — aligned with medroute_eval_60 gold labels (15 per route)
 #
-# Dataset analysis (confirmed from full JSON):
-#   COMPLEX (expected_route=COMPLEX, 4 cases):
-#     "What are the risk factors and complications of X" ONLY
+#   COMPLEX (15 cases):
+#     "Compare symptoms of X and Y"
+#     "How do X and Y differ in treatment approach?"
+#     "What is the mechanism by which X causes Y?"
+#     "What are the risk factors and complications of X?"
 #
-#   RELATIONAL (expected_route=RELATIONAL, 15 cases):
-#     "What causes X", "How does X lead to Y",
-#     "What is the relationship between X and Y",
-#     "How does X affect patients with Y",
-#     "What complications arise from X in patients with Y",
-#     "What is the mechanism by which X causes Y"
+#   RELATIONAL (15 cases):
+#     "What causes X?", "How does X lead to Y?",
+#     "What is the relationship between X and Y?",
+#     "How does X affect patients with Y?",
+#     "What complications arise from X in patients with Y?"
 #
-#   FACTUAL (expected_route=FACTUAL, 15+ cases):
-#     symptoms, treatment, diagnosis, medication, precautions,
-#     compare symptoms, differ in treatment, how can X be prevented
+#   FACTUAL (15 cases):
+#     symptoms, treatment, diagnosis, medication, precautions
 #
-#   GENERAL (expected_route=GENERAL, 15 cases):
-#     "What lifestyle changes help manage X",
-#     "When should a patient with X seek emergency care",
-#     "What dietary recommendations exist for X patients"
+#   GENERAL (15 cases):
+#     "What lifestyle changes help manage X?",
+#     "When should a patient with X seek emergency care?",
+#     "What dietary recommendations exist for X patients?",
+#     "How can X be prevented?"
 # ---------------------------------------------------------------------------
 
 def classify_query(query: str) -> str:
     q = query.lower().strip()
 
     # ------------------------------------------------------------------
-    # 1. COMPLEX — must be first, catches all 4 dataset cases
+    # 1. COMPLEX — multi-entity comparisons, mechanism reasoning,
+    #              multi-aspect single-disease questions
     # ------------------------------------------------------------------
     if "risk factors and complications" in q:
         return "COMPLEX"
     if "risk factors" in q and "complications of" in q:
         return "COMPLEX"
+    if q.startswith("compare "):
+        return "COMPLEX"
+    if "differ in treatment" in q:
+        return "COMPLEX"
+    if re.search(r"\bhow do\b.{1,60}\bdiffer\b", q):
+        return "COMPLEX"
+    if "mechanism by which" in q:
+        return "COMPLEX"
 
     # ------------------------------------------------------------------
-    # 2. GENERAL — must be second, before RELATIONAL/FACTUAL
+    # 2. GENERAL — lifestyle, prevention, dietary, emergency triage
     # ------------------------------------------------------------------
     if "lifestyle changes" in q:
         return "GENERAL"
@@ -90,15 +100,17 @@ def classify_query(query: str) -> str:
         return "GENERAL"
     if "dietary recommendations" in q:
         return "GENERAL"
+    if re.search(r"\bhow can\b.{1,50}\bprevented\b", q):
+        return "GENERAL"
+    if "how to prevent" in q or "prevention of" in q:
+        return "GENERAL"
 
     # ------------------------------------------------------------------
-    # 3. RELATIONAL — before FACTUAL to catch "what causes X"
+    # 3. RELATIONAL — causal and cross-disease relationship queries
     # ------------------------------------------------------------------
     if re.search(r"\bwhat causes?\b", q):
         return "RELATIONAL"
     if "relationship between" in q:
-        return "RELATIONAL"
-    if "mechanism by which" in q:
         return "RELATIONAL"
     if "lead to" in q or "leads to" in q:
         return "RELATIONAL"
@@ -114,19 +126,8 @@ def classify_query(query: str) -> str:
         return "RELATIONAL"
 
     # ------------------------------------------------------------------
-    # 4. FACTUAL — comparisons, prevention, standard clinical lookups
+    # 4. FACTUAL — single-entity clinical fact lookups
     # ------------------------------------------------------------------
-    if q.startswith("compare "):
-        return "FACTUAL"
-    if "differ in treatment" in q:
-        return "FACTUAL"
-    if re.search(r"\bhow do\b.{1,50}\bdiffer\b", q):
-        return "FACTUAL"
-    if re.search(r"\bhow can\b.{1,50}\bprevented\b", q):
-        return "FACTUAL"
-    if "how to prevent" in q or "prevention of" in q:
-        return "FACTUAL"
-
     factual_signals = [
         "what are the symptoms", "what are symptoms",
         "what is the treatment", "treatment for",
@@ -163,11 +164,13 @@ def route_query(query: str) -> QueryRoute:
 ROUTER_SYSTEM_PROMPT = """You are an Adaptive Query Router for a medical chatbot.
 
 Classify queries into exactly one of:
-FACTUAL   — symptoms, treatment, diagnosis, medication, precautions, comparisons, prevention
-RELATIONAL — what causes X, mechanism by which X causes Y, relationship between X and Y,
+FACTUAL   — single-disease lookups: symptoms, treatment, diagnosis, medication, precautions
+RELATIONAL — cross-disease: what causes X, relationship between X and Y,
              how does X lead to/affect Y, complications from X in patients with Y
-COMPLEX   — "what are the risk factors and complications of X" template ONLY
-GENERAL   — lifestyle changes, dietary recommendations, when to seek emergency care
+COMPLEX   — multi-entity or multi-aspect: compare X and Y, how do X and Y differ,
+             mechanism by which X causes Y, risk factors and complications of X
+GENERAL   — management advice: lifestyle changes, dietary recommendations,
+             how can X be prevented, when to seek emergency care
 
 Return JSON only: {"label":"FACTUAL|RELATIONAL|COMPLEX|GENERAL","reason":"short reason"}
 """

@@ -18,53 +18,210 @@ st.set_page_config(
 
 st.markdown("""
 <style>
+/* ── Base ───────────────────────────────────────────────────────────────── */
+html, body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif !important;
+}
+
+/* ── Main content ───────────────────────────────────────────────────────── */
 [data-testid="stAppViewContainer"] > section.main,
 [data-testid="stMain"],
 .block-container {
-    background-color: #C2D6EC !important;
+    background-color: #EBF5EE !important;
+    color: #111827 !important;
 }
+.block-container {
+    padding-top: 1.8rem !important;
+    padding-bottom: 1rem !important;
+    max-width: 860px !important;
+}
+
+/* Force all text dark in main area */
+.block-container p,
+.block-container span,
+.block-container li,
+.block-container h1,
+.block-container h2,
+.block-container h3,
+.block-container label {
+    color: #111827 !important;
+}
+
+/* ── Sidebar ────────────────────────────────────────────────────────────── */
 [data-testid="stSidebar"] {
-    border-right: 3px solid #1E40AF;
+    background-color: #14532D !important;
+    border-right: 2px solid #166534 !important;
 }
+/* Kill white backgrounds on every inner wrapper Streamlit generates */
+[data-testid="stSidebar"] > div,
+[data-testid="stSidebar"] section,
+[data-testid="stSidebarContent"],
+[data-testid="stSidebarUserContent"],
+[data-testid="stVerticalBlockBorderWrapper"],
+[data-testid="stSidebar"] [data-testid="stVerticalBlock"],
+[data-testid="stSidebar"] .stRadio,
+[data-testid="stSidebar"] .stRadio > div,
+[data-testid="stSidebar"] [class*="block-container"],
+[data-testid="stSidebar"] [class*="st-emotion-cache"] {
+    background-color: transparent !important;
+    background: transparent !important;
+}
+/* Force every text node in the sidebar to light green — span catches radio labels */
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] span,
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] small,
+[data-testid="stSidebar"] em,
+[data-testid="stSidebar"] strong,
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {
+    color: #ECFDF5 !important;
+}
+/* Radio group heading */
+[data-testid="stSidebar"] .stRadio > label > div > p {
+    color: #A7F3D0 !important;
+    font-size: 0.75rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+}
+
+/* ── Chat input ─────────────────────────────────────────────────────────── */
 [data-testid="stChatInputContainer"],
 [data-testid="stChatInputContainer"] > div,
 [data-testid="stBottom"],
 [data-testid="stBottom"] > div {
-    background-color: #C2D6EC !important;
-    border-top: none !important;
-    box-shadow: none !important;
+    background-color: #EBF5EE !important;
+    border-top: 2px solid #6EE7B7 !important;
+    box-shadow: 0 -2px 8px rgba(5,150,105,0.08) !important;
 }
-[data-testid="stChatMessage"] {
+/* Border and shadow on the wrapper so the whole input box is clearly framed */
+[data-testid="stChatInput"] {
     background-color: #FFFFFF !important;
+    border: 2.5px solid #059669 !important;
     border-radius: 12px !important;
-    padding: 14px 18px !important;
-    margin: 6px 0 !important;
-    box-shadow: 0 2px 8px rgba(30, 64, 175, 0.12) !important;
-    border: 1px solid #BAD0E8 !important;
-}
-[data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-assistant"]) {
-    border-left: 4px solid #1E40AF !important;
-}
-[data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {
-    border-left: 4px solid #15803D !important;
-    background-color: #F0FDF4 !important;
+    box-shadow: 0 2px 10px rgba(5,150,105,0.18) !important;
+    overflow: hidden !important;
 }
 [data-testid="stChatInput"] textarea {
     background-color: #FFFFFF !important;
-    color: #0A1628 !important;
+    color: #111827 !important;
     font-size: 15px !important;
+    border: none !important;
+    outline: none !important;
+    padding: 12px 16px !important;
 }
-div.stButton > button[kind="primary"],
+[data-testid="stChatInput"] textarea::placeholder {
+    color: #6B7280 !important;
+}
+
+/* ── Chat messages ──────────────────────────────────────────────────────── */
+[data-testid="stChatMessage"] {
+    border-radius: 10px !important;
+    padding: 14px 18px !important;
+    margin: 6px 0 !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.07) !important;
+    border: 1px solid #BBF7D0 !important;
+    color: #111827 !important;
+}
+[data-testid="stChatMessage"] p,
+[data-testid="stChatMessage"] li,
+[data-testid="stChatMessage"] span,
+[data-testid="stChatMessage"] div {
+    color: #111827 !important;
+}
+/* Assistant */
+[data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-assistant"]) {
+    background-color: #FFFFFF !important;
+    border-left: 4px solid #059669 !important;
+}
+/* User */
+[data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {
+    background-color: #D1FAE5 !important;
+    border-left: 4px solid #065F46 !important;
+}
+
+/* ── Expander (Sources) ─────────────────────────────────────────────────── */
+[data-testid="stExpander"] {
+    background-color: #F0FFF4 !important;
+    border: 1px solid #A7F3D0 !important;
+    border-radius: 8px !important;
+}
+[data-testid="stExpander"] summary span {
+    color: #065F46 !important;
+    font-weight: 600 !important;
+}
+[data-testid="stExpander"] p {
+    color: #374151 !important;
+}
+
+/* ── Buttons ────────────────────────────────────────────────────────────── */
 div.stButton > button {
-    background-color: #1E40AF !important;
+    background-color: #059669 !important;
     color: #FFFFFF !important;
     border: none !important;
     border-radius: 8px !important;
     font-weight: 600 !important;
+    padding: 8px 20px !important;
 }
 div.stButton > button:hover {
-    background-color: #1D4ED8 !important;
+    background-color: #047857 !important;
 }
+
+/* ── File uploader ──────────────────────────────────────────────────────── */
+[data-testid="stFileUploader"] {
+    background-color: #F0FFF4 !important;
+    border-radius: 8px !important;
+}
+[data-testid="stFileUploader"] p,
+[data-testid="stFileUploader"] span {
+    color: #111827 !important;
+}
+
+/* ── Text area (JSON edit) ──────────────────────────────────────────────── */
+[data-testid="stTextArea"] textarea {
+    background-color: #FFFFFF !important;
+    color: #111827 !important;
+    border: 1.5px solid #A7F3D0 !important;
+    border-radius: 8px !important;
+    font-family: 'Consolas', 'Courier New', monospace !important;
+    font-size: 13px !important;
+}
+
+/* ── Alerts ─────────────────────────────────────────────────────────────── */
+[data-testid="stAlert"] p {
+    color: #111827 !important;
+}
+
+/* ── Metric ─────────────────────────────────────────────────────────────── */
+[data-testid="stMetric"] label,
+[data-testid="stMetricValue"] {
+    color: #111827 !important;
+}
+
+/* ── Caption / small text ───────────────────────────────────────────────── */
+[data-testid="stCaptionContainer"] p,
+.stCaption {
+    color: #374151 !important;
+}
+
+/* ── Spinner ────────────────────────────────────────────────────────────── */
+[data-testid="stSpinner"] p {
+    color: #059669 !important;
+}
+
+/* ── Divider ────────────────────────────────────────────────────────────── */
+hr {
+    border-color: #A7F3D0 !important;
+}
+
+/* ── Progress bar ───────────────────────────────────────────────────────── */
+[data-testid="stProgressBar"] > div > div {
+    background-color: #059669 !important;
+}
+
+/* ── Route badges ───────────────────────────────────────────────────────── */
 .route-badge {
     display: inline-block;
     font-size: 11px;
@@ -75,10 +232,10 @@ div.stButton > button:hover {
     letter-spacing: 0.5px;
     text-transform: uppercase;
 }
-.badge-FACTUAL    { background:#DCFCE7; color:#14532D; border:1px solid #86EFAC; }
-.badge-RELATIONAL { background:#FEF3C7; color:#713F12; border:1px solid #FCD34D; }
-.badge-COMPLEX    { background:#EDE9FE; color:#3B0764; border:1px solid #C4B5FD; }
-.badge-GENERAL    { background:#DBEAFE; color:#1E3A8A; border:1px solid #93C5FD; }
+.badge-FACTUAL    { background:#D1FAE5; color:#065F46; border:1px solid #6EE7B7; }
+.badge-RELATIONAL { background:#FEF3C7; color:#78350F; border:1px solid #FCD34D; }
+.badge-COMPLEX    { background:#EDE9FE; color:#4C1D95; border:1px solid #A78BFA; }
+.badge-GENERAL    { background:#E0F2FE; color:#0C4A6E; border:1px solid #7DD3FC; }
 .badge-HYBRID     { background:#F1F5F9; color:#334155; border:1px solid #CBD5E1; }
 .badge-TIMEOUT    { background:#FEE2E2; color:#7F1D1D; border:1px solid #FCA5A5; }
 </style>
@@ -137,8 +294,12 @@ def _route_badge_html(route: str) -> str:
 # ---------------------------------------------------------------------------
 
 def render_chat_page():
-    st.markdown("### Medical Query Assistant — MedRoute")
-    st.caption("Ask about diseases, symptoms, treatments, precautions, or general health advice.")
+    st.markdown("## MedRoute — Medical Query Assistant")
+    st.caption(
+        "Ask about diseases, symptoms, treatments, or precautions. "
+        "Responses are drawn from a structured medical knowledge graph and document retrieval."
+    )
+    st.divider()
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
@@ -167,14 +328,14 @@ def render_chat_page():
         chat_history = build_chat_history_text(st.session_state.messages[:-1])
 
         response = None
-        with st.spinner("Searching…"):
+        with st.spinner("Searching knowledge base…"):
             try:
                 response = request_with_retry(
                     "POST", CHATBOT_URL, retries=2, backoff_seconds=2.0,
                     json={
                         "text": prompt, "query": prompt,
                         "chat_history": chat_history,
-                        "routing": st.session_state.get("routing_enabled", True),
+                        "routing": True,
                     },
                     timeout=100,
                 )
@@ -214,17 +375,92 @@ def render_chat_page():
 
 
 # ---------------------------------------------------------------------------
-# Ingest page — abstract status, no raw job IDs or tables
+# Ingest page
 # ---------------------------------------------------------------------------
 
 def render_ingest_page():
-    st.markdown("### Ingest Medical Content")
-    st.caption("Upload a file to add new medical knowledge to the system.")
+    st.markdown("## Ingest & Manage Medical Content")
+    st.caption("Upload files to add knowledge, or manage existing diseases in the graph.")
+    st.divider()
 
+    tab_upload, tab_manage = st.tabs(["Upload & Review", "Manage Knowledge"])
+
+    with tab_manage:
+        _render_manage_tab()
+
+    with tab_upload:
+        _render_upload_tab()
+
+
+def _render_manage_tab():
+    st.markdown("#### Knowledge Graph — Disease Index")
+    st.caption("All diseases currently stored in Neo4j. You can delete any entry and its orphaned symptoms/precautions.")
+
+    if st.button("Refresh list", use_container_width=False):
+        st.session_state.pop("disease_list", None)
+
+    if "disease_list" not in st.session_state:
+        with st.spinner("Loading diseases from graph…"):
+            try:
+                r = requests.get(f"{API_BASE_URL}/ingest/diseases", timeout=15)
+                st.session_state.disease_list = r.json().get("diseases", []) if r.status_code == 200 else []
+            except Exception:
+                st.session_state.disease_list = []
+
+    diseases = st.session_state.get("disease_list", [])
+
+    if not diseases:
+        st.info("No diseases found in the knowledge graph.")
+        return
+
+    st.caption(f"{len(diseases)} disease(s) in graph")
+
+    # Confirm-before-delete state
+    if "confirm_delete" not in st.session_state:
+        st.session_state.confirm_delete = ""
+
+    for d in diseases:
+        name = d["name"]
+        syms = d["symptoms"]
+        precs = d["precautions"]
+        col_name, col_stats, col_btn = st.columns([4, 3, 2])
+        with col_name:
+            st.markdown(f"**{name}**")
+        with col_stats:
+            st.caption(f"{syms} symptom(s) · {precs} precaution(s)")
+        with col_btn:
+            if st.session_state.confirm_delete == name:
+                c1, c2 = st.columns(2)
+                with c1:
+                    if st.button("Yes, delete", key=f"yes_{name}", use_container_width=True):
+                        try:
+                            r = requests.delete(
+                                f"{API_BASE_URL}/ingest/disease/{requests.utils.quote(name, safe='')}",
+                                timeout=15,
+                            )
+                            if r.status_code == 200:
+                                st.success(f"'{name}' deleted.")
+                            else:
+                                st.error(f"Delete failed: {r.text[:120]}")
+                        except Exception as exc:
+                            st.error(f"Error: {exc}")
+                        st.session_state.confirm_delete = ""
+                        st.session_state.pop("disease_list", None)
+                        st.rerun()
+                with c2:
+                    if st.button("Cancel", key=f"cancel_{name}", use_container_width=True):
+                        st.session_state.confirm_delete = ""
+                        st.rerun()
+            else:
+                if st.button("Delete", key=f"del_{name}", use_container_width=True):
+                    st.session_state.confirm_delete = name
+                    st.rerun()
+
+
+def _render_upload_tab():
     if "active_job_id" not in st.session_state:
         st.session_state.active_job_id = ""
 
-    # ── Upload section ───────────────────────────────────────────────────────
     if not st.session_state.active_job_id:
         uploaded = st.file_uploader(
             "Choose a file", type=["pdf", "txt", "csv", "md"],
@@ -250,7 +486,6 @@ def render_ingest_page():
                         st.error("Could not reach the server. Is the backend running?")
         return
 
-    # ── Poll status abstractly ───────────────────────────────────────────────
     try:
         status_r = requests.get(
             f"{API_BASE_URL}/ingest/status/{st.session_state.active_job_id}", timeout=30
@@ -268,10 +503,9 @@ def render_ingest_page():
 
     status = job.get("status", "unknown")
 
-    # ── Processing in progress ───────────────────────────────────────────────
     if status in {"pending", "processing", "inserting"}:
         stage_info = {
-            "pending":    ("Reading file content…",         15),
+            "pending":    ("Reading file content…",          15),
             "processing": ("Analysing and extracting data…", 60),
             "inserting":  ("Writing to knowledge base…",     88),
         }
@@ -281,7 +515,6 @@ def render_ingest_page():
         time.sleep(3)
         st.rerun()
 
-    # ── Ready for review ─────────────────────────────────────────────────────
     elif status == "review_needed":
         st.success("Analysis complete — please review the extracted information below.")
 
@@ -331,7 +564,6 @@ def render_ingest_page():
                 st.session_state.active_job_id = ""
                 st.rerun()
 
-    # ── Terminal states ───────────────────────────────────────────────────────
     elif status == "approved":
         st.success("Knowledge successfully added to the system.")
         if st.button("Upload another file", use_container_width=True):
@@ -358,11 +590,19 @@ def render_ingest_page():
 
 
 # ---------------------------------------------------------------------------
-# Sidebar — title + 2 nav options only, nothing else
+# Sidebar
 # ---------------------------------------------------------------------------
 
 with st.sidebar:
     st.markdown("## MedRoute")
+    st.markdown(
+        "<p style='color:#A7F3D0; font-size:0.85rem; line-height:1.6; margin-bottom:0.6rem;'>"
+        "AI-powered medical assistant backed by a Neo4j knowledge graph. "
+        "Ask about diseases, symptoms, treatments, and precautions."
+        "</p>",
+        unsafe_allow_html=True,
+    )
+    st.divider()
 
     page = st.radio(
         "Navigation",

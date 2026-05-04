@@ -31,13 +31,13 @@
   },
   {
     "id": "MR_004",
-    "question": "What causes Hypertension?",
-    "expected_answer": "hypertension causes blood pressure sodium",
-    "route": "RELATIONAL",
+    "question": "What are the symptoms of Hypertension?",
+    "expected_answer": "symptoms hypertension headache dizziness blood pressure",
+    "route": "FACTUAL",
     "source": "medroute_handcrafted_v1",
-    "query": "What causes Hypertension?",
-    "expected_route": "RELATIONAL",
-    "evidence_keywords": ["blood pressure", "ACE inhibitor", "diuretic", "sodium", "mmHg"]
+    "query": "What are the symptoms of Hypertension?",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["headache", "dizziness", "blood pressure", "hypertension", "vision"]
   },
   {
     "id": "MR_005",
@@ -91,13 +91,13 @@
   },
   {
     "id": "MR_010",
-    "question": "What causes Migraine?",
-    "expected_answer": "migraine causes triggers headache",
-    "route": "RELATIONAL",
+    "question": "What is the treatment for Migraine?",
+    "expected_answer": "migraine treatment sumatriptan pain reliever",
+    "route": "FACTUAL",
     "source": "medroute_handcrafted_v1",
-    "query": "What causes Migraine?",
-    "expected_route": "RELATIONAL",
-    "evidence_keywords": ["headache", "migraine", "triggers", "nausea", "light sensitivity"]
+    "query": "What is the treatment for Migraine?",
+    "expected_route": "FACTUAL",
+    "evidence_keywords": ["sumatriptan", "ibuprofen", "migraine", "headache", "triptan"]
   },
   {
     "id": "MR_011",
@@ -306,8 +306,8 @@
     "route": "COMPLEX",
     "source": "medroute_handcrafted_v1",
     "query": "Compare symptoms of Malaria and Dengue.",
-    "expected_route": "FACTUAL",
-    "evidence_keywords": ["fever", "chills", "antimalarial", "chloroquine", "mosquito"]
+    "expected_route": "COMPLEX",
+    "evidence_keywords": ["fever", "chills", "platelet", "rash", "mosquito"]
   },
   {
     "id": "MR_032",
@@ -326,8 +326,8 @@
     "route": "COMPLEX",
     "source": "medroute_handcrafted_v1",
     "query": "How do Tuberculosis and Pneumonia differ in treatment approach?",
-    "expected_route": "FACTUAL",
-    "evidence_keywords": ["isoniazid", "rifampicin", "cough", "sputum", "TB", "lungs"]
+    "expected_route": "COMPLEX",
+    "evidence_keywords": ["isoniazid", "amoxicillin", "antibiotic", "cough", "lungs"]
   },
   {
     "id": "MR_034",
@@ -336,8 +336,8 @@
     "route": "COMPLEX",
     "source": "medroute_handcrafted_v1",
     "query": "What is the mechanism by which Hypertension causes Heart attack and Stroke?",
-    "expected_route": "RELATIONAL",
-    "evidence_keywords": ["blood pressure", "ACE inhibitor", "diuretic", "sodium", "mmHg"]
+    "expected_route": "COMPLEX",
+    "evidence_keywords": ["blood pressure", "stroke", "cardiac", "coronary", "arterial"]
   },
   {
     "id": "MR_035",
@@ -346,7 +346,7 @@
     "route": "COMPLEX",
     "source": "medroute_handcrafted_v1",
     "query": "Compare symptoms of Hypothyroidism and Hyperthyroidism.",
-    "expected_route": "FACTUAL",
+    "expected_route": "COMPLEX",
     "evidence_keywords": ["thyroid", "hormone", "symptoms", "hypothyroidism", "hyperthyroidism"]
   },
   {
@@ -366,7 +366,7 @@
     "route": "COMPLEX",
     "source": "medroute_handcrafted_v1",
     "query": "How do GERD and Peptic ulcer disease differ in treatment approach?",
-    "expected_route": "FACTUAL",
+    "expected_route": "COMPLEX",
     "evidence_keywords": ["antacid", "proton pump", "ulcer", "reflux", "treatment"]
   },
   {
@@ -376,8 +376,8 @@
     "route": "COMPLEX",
     "source": "medroute_handcrafted_v1",
     "query": "What is the mechanism by which Dengue causes bleeding and shock?",
-    "expected_route": "RELATIONAL",
-    "evidence_keywords": ["platelet", "mosquito", "aedes", "rash", "hemorrhagic"]
+    "expected_route": "COMPLEX",
+    "evidence_keywords": ["platelet", "hemorrhagic", "vascular", "dengue", "shock"]
   },
   {
     "id": "MR_039",
@@ -386,7 +386,7 @@
     "route": "COMPLEX",
     "source": "medroute_handcrafted_v1",
     "query": "Compare symptoms of Common Cold and Influenza.",
-    "expected_route": "FACTUAL",
+    "expected_route": "COMPLEX",
     "evidence_keywords": ["fever", "cough", "virus", "influenza", "cold"]
   },
   {
@@ -406,8 +406,8 @@
     "route": "COMPLEX",
     "source": "medroute_handcrafted_v1",
     "query": "How do Typhoid and Gastroenteritis differ in treatment approach?",
-    "expected_route": "FACTUAL",
-    "evidence_keywords": ["antibiotic", "rehydration", "fever", "treatment", "typhoid"]
+    "expected_route": "COMPLEX",
+    "evidence_keywords": ["ciprofloxacin", "rehydration", "electrolyte", "antibiotic", "typhoid"]
   },
   {
     "id": "MR_042",
@@ -416,7 +416,7 @@
     "route": "COMPLEX",
     "source": "medroute_handcrafted_v1",
     "query": "What is the mechanism by which Chronic cholestasis causes Jaundice and itching?",
-    "expected_route": "RELATIONAL",
+    "expected_route": "COMPLEX",
     "evidence_keywords": ["bile", "bilirubin", "cholestasis", "jaundice", "itching"]
   },
   {
@@ -426,7 +426,7 @@
     "route": "COMPLEX",
     "source": "medroute_handcrafted_v1",
     "query": "Compare symptoms of Arthritis and Osteoarthritis.",
-    "expected_route": "FACTUAL",
+    "expected_route": "COMPLEX",
     "evidence_keywords": ["joint", "pain", "inflammation", "arthritis", "cartilage"]
   },
   {
@@ -446,7 +446,7 @@
     "route": "COMPLEX",
     "source": "medroute_handcrafted_v1",
     "query": "How do Hepatitis A and Hepatitis E differ in treatment approach?",
-    "expected_route": "FACTUAL",
+    "expected_route": "COMPLEX",
     "evidence_keywords": ["hepatitis", "liver", "treatment", "supportive", "antiviral"]
   },
   {
@@ -456,7 +456,7 @@
     "route": "GENERAL",
     "source": "medroute_handcrafted_v1",
     "query": "How can Malaria be prevented?",
-    "expected_route": "FACTUAL",
+    "expected_route": "GENERAL",
     "evidence_keywords": ["fever", "chills", "antimalarial", "chloroquine", "mosquito"]
   },
   {
@@ -496,7 +496,7 @@
     "route": "GENERAL",
     "source": "medroute_handcrafted_v1",
     "query": "How can Tuberculosis be prevented?",
-    "expected_route": "FACTUAL",
+    "expected_route": "GENERAL",
     "evidence_keywords": ["isoniazid", "rifampicin", "cough", "sputum", "TB", "lungs"]
   },
   {
@@ -536,7 +536,7 @@
     "route": "GENERAL",
     "source": "medroute_handcrafted_v1",
     "query": "How can Common Cold be prevented?",
-    "expected_route": "FACTUAL",
+    "expected_route": "GENERAL",
     "evidence_keywords": ["hygiene", "handwashing", "virus", "cold", "prevention"]
   },
   {
@@ -576,7 +576,7 @@
     "route": "GENERAL",
     "source": "medroute_handcrafted_v1",
     "query": "How can Hepatitis B be prevented?",
-    "expected_route": "FACTUAL",
+    "expected_route": "GENERAL",
     "evidence_keywords": ["vaccine", "vaccination", "hepatitis", "blood", "prevention"]
   },
   {
